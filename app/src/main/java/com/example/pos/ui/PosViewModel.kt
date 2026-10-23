@@ -593,7 +593,31 @@ class PosViewModel(application: Application) : AndroidViewModel(application) {
                             val name = user?.fullName ?: fbUser.displayName ?: trimmed.substringBefore("@")
                             authManager.loginSession(name, fbUser.uid, fbUser.email ?: trimmed, role)
 
-                            if (activeOrg != null) {
+                            if (activeOrg == null) {
+                                val regResult = repository.registerNewStoreAndUser(
+                                    storeName = "$name's Store",
+                                    taxId = "",
+                                    currencySymbol = "Rs",
+                                    taxMode = TaxMode.EXCLUSIVE,
+                                    userName = name,
+                                    email = fbUser.email ?: trimmed,
+                                    role = StaffRole.OWNER,
+                                    pin = pinOrSecret,
+                                    ownerUid = fbUser.uid
+                                )
+                                activeOrg = regResult.org
+                                val userEntity = regResult.user
+                                try {
+                                    syncRepo.syncUserAndOrganizationToFirestore(
+                                        user = userEntity,
+                                        org = activeOrg,
+                                        branch = regResult.branch,
+                                        register = regResult.register
+                                    )
+                                } catch (e: Exception) {
+                                    Log.e("PosViewModel", "Email sign-in Firestore sync error: ${e.message}")
+                                }
+                            } else {
                                 val userEntity = user ?: UserEntity(
                                     id = fbUser.uid,
                                     orgId = activeOrg.id,

@@ -304,6 +304,141 @@ interface PosStrings {
     val saveFiscalYear: String
     val configuredFiscalYears: (count: Int) -> String
     val addFiscalYearShort: String
+    val searchSettingsPlaceholder: String
+    val editProfile: String
+    val editStoreInfo: String
+    val currencySymbol: String
+    val taxCalculationMode: String
+    val notSet: String
+    val noActiveFiscalYear: String
+    val notConfigured: String
+    val nepaliBsCycle: String
+    val firstInvoicePreview: String
+    val invoicePrefixLabel: String
+    val setActive: String
+    val reopen: String
+    val billsIssuedCount: (count: Long) -> String
+    val staffMembersCount: (count: Int) -> String
+    val acceptedPaymentMethods: String
+    val cashPaymentMethod: String
+    val cardPaymentMethod: String
+    val qrPaymentMethod: String
+    val creditPaymentMethod: String
+    val checkoutPolicies: String
+    val maxDiscountLimit: String
+    val autoPrintReceiptSwitch: String
+    val saveCheckoutSetup: String
+    val lowStockThresholdLabel: String
+    val negativeStockPolicy: String
+    val stockBlock: String
+    val stockWarn: String
+    val stockAllow: String
+    val saveInventoryRules: String
+    val thermalPrinterTitle: String
+    val printerSubtitle: String
+    val scanPrinters: String
+    val scanningPrinters: String
+    val connectedPrinterTitle: String
+    val printerPairedDisconnected: String
+    val noPrinterConnected: String
+    val pairPrinterHint: String
+    val disconnect: String
+    val pairDevice: String
+    val connectNow: String
+    val detectedPrintersCount: (count: Int) -> String
+    val allBluetoothDevicesCount: (count: Int) -> String
+    val showAllPairedDevices: String
+    val showPrintersOnly: String
+    val statusPaired: String
+    val statusNearby: String
+    val statusActive: String
+    val btnReconnect: String
+    val btnConnect: String
+    val scanningNearbyPrinters: String
+    val noPrintersFound: String
+    val pairPrinterInstructions: String
+    val bluetoothSettingsButton: String
+    val printerAddressLabel: String
+    val paperWidth: String
+    val autoPrintCheckoutTitle: String
+    val autoPrintCheckoutDesc: String
+    val cashDrawerPulseTitle: String
+    val cashDrawerPulseDesc: String
+    val barcodeScannerSetup: String
+    val barcodeScannerMode: String
+    val kickDrawer: String
+    val autoLockTimerTitle: String
+    val autoLockTimerDesc: String
+    val biometricUnlockTitle: String
+    val biometricUnlockDesc: String
+    val biometricLoginTitle: String
+    val autoLogoutTimerTitle: String
+    val autoLogoutTimerDesc: String
+    val enforceStrongPinTitle: String
+    val enforceStrongPinDesc: String
+    val customTimer: String
+    val customTimerWithInterval: (interval: String) -> String
+    val saveSecuritySettings: String
+    val customAutoLockTimer: String
+    val customLockMinutesDesc: String
+    val minutesExample: String
+    val customAutoLogoutTimer: String
+    val customLogoutMinutesDesc: String
+    val logoutMinutesExample: String
+    val auditLogsGroupTitle: String
+    val auditTrailTitle: (count: Int) -> String
+    val auditTrailDesc: String
+    val viewAuditLogs: String
+    val fullBackupTitle: String
+    val fullBackupDesc: String
+    val linkedBackupGmail: String
+    val noBackupEmailLinked: String
+    val linkGmail: String
+    val changeGmail: String
+    val sendBackupToGmail: String
+    val exportLocalJson: String
+    val restoreBackupJson: String
+    val firestoreSyncGroupTitle: String
+    val firestoreCollectionsTitle: String
+    val firestoreSyncDesc: String
+    val activeStoreIdLabel: String
+    val syncStatusMessageLabel: String
+    val pendingOutboxLabel: String
+    val pendingRecordsCount: (count: Int) -> String
+    val collectionsAutoSynced: String
+    val syncAllCollections: String
+    val fullCloudSync: String
+    val logoutFromPos: String
+    val editUserProfile: String
+    val saveChanges: String
+    val changeSecurityPin: String
+    val changePinInstruction: String
+    val currentPin: String
+    val newPin: String
+    val updatePin: String
+    val securityAuditLogs: String
+    val filterLogsPlaceholder: String
+    val noAuditLogsFound: String
+    val switchTillOperator: String
+    val switchOperatorInstruction: String
+    val operatorPin: String
+    val verifyAndSwitch: String
+    val editStoreProfile: String
+    val saveStoreSettings: String
+    val removeStaffTitle: String
+    val removeStaffConfirm: (name: String, email: String) -> String
+    val removeStaff: String
+    val linkGmailTitle: String
+    val linkGmailSubtitle: String
+    val gmailAddress: String
+    val useSignedInGoogleAccount: (email: String) -> String
+    val saveAndLink: String
+    val restoreDatabaseTitle: String
+    val restoreDatabaseConfirmDesc: (storeName: String) -> String
+    val backupMetadata: String
+    val totalRecordsProceed: (count: Int) -> String
+    val confirmAndRestore: String
+    val restoring: String
 
     // ── Staff Member Form ───────────────────────────────────────────────────────
     val addStaffMember: String
@@ -865,31 +1000,166 @@ object EnglishStrings : PosStrings {
     override val lastSyncTime = "Last Synced"
     override val printerSearch = "Searching for printers..."
     override val printerConnect = "Connect"
-    override val printerConnected = "Connected"
-    override val printerDisconnected = "Disconnected"
-    override val testPrint = "Test Print"
-    override val bluetoothPermissionRequired = "Bluetooth permission is required to scan printers"
-    override val fiscalYearManagement = "Fiscal Year Management"
-    override val addFiscalYear = "Add Fiscal Year"
-    override val closeFiscalYear = "Close Fiscal Year"
-    override val fiscalYearName = "Fiscal Year Name"
-    override val fiscalYearStart = "Start Date"
-    override val fiscalYearEnd = "End Date"
-    override val fiscalYearActive = "Active"
-    override val fiscalYearClosed = "Closed"
-    override val fiscalYearsGroup = "Fiscal Years & Invoicing"
-    override val manage = "Manage"
-    override val invoiceFormat = "Invoice Format"
-    override val invoicesIssued = "Invoices Issued"
-    override val nextInvoicePreview = "Next Invoice Preview"
-    override val activePeriodSubtitle = "Active Period & Invoicing Series"
-    override val createNewFiscalYear = "Create New Fiscal Year"
-    override val fiscalYearInstruction = "Specify Nepali Fiscal Year (e.g., 2084/85) and invoice series prefix."
-    override val fiscalYearNameWithExample = "Fiscal Year Name (e.g. 2084/85)"
-    override val backToList = "Back to List"
-    override val saveFiscalYear = "Save Fiscal Year"
-    override val configuredFiscalYears = { count: Int -> "Configured Fiscal Years ($count)" }
-    override val addFiscalYearShort = "+ Add Fiscal Year"
+    override val printerConnected = "जोडिएको छ (Connected)"
+    override val printerDisconnected = "सम्पर्क टुट्यो (Disconnected)"
+    override val testPrint = "नमुना प्रिन्ट (Test Print)"
+    override val bluetoothPermissionRequired = "प्रिन्टर खोज्न ब्लुटुथ अनुमति आवश्यक छ"
+    override val fiscalYearManagement = "आर्थिक वर्ष व्यवस्थापन (Fiscal Year)"
+    override val addFiscalYear = "नयाँ आर्थिक वर्ष थप्नुहोस्"
+    override val closeFiscalYear = "आर्थिक वर्ष बन्द गर्नुहोस्"
+    override val fiscalYearName = "आर्थिक वर्षको नाम"
+    override val fiscalYearStart = "सुरु मिति"
+    override val fiscalYearEnd = "अन्त्य मिति"
+    override val fiscalYearActive = "चालु (Active)"
+    override val fiscalYearClosed = "बन्द (Closed)"
+    override val fiscalYearsGroup = "आर्थिक वर्ष र इनभ्वाइसिङ (Invoicing)"
+    override val manage = "व्यवस्थापन"
+    override val invoiceFormat = "इनभ्वाइसको ढाँचा"
+    override val invoicesIssued = "काटिएका बिलहरू"
+    override val nextInvoicePreview = "अर्को बिल नम्बर"
+    override val activePeriodSubtitle = "चालु अवधि र बिलको सिरिज"
+    override val createNewFiscalYear = "नयाँ आर्थिक वर्ष सिर्जना गर्नुहोस्"
+    override val fiscalYearInstruction = "नेपाली आर्थिक वर्ष (जस्तै २०८१/८२) र बिलको सिरिज प्रिफिक्स राख्नुहोस्।"
+    override val fiscalYearNameWithExample = "आर्थिक वर्षको नाम (जस्तै २०८१/८२)"
+    override val backToList = "सूचीमा फर्कनुहोस्"
+    override val saveFiscalYear = "आर्थिक वर्ष सेभ गर्नुहोस्"
+    override val configuredFiscalYears = { count: Int -> "तयार गरिएका आर्थिक वर्षहरू ($count)" }
+    override val addFiscalYearShort = "+ आर्थिक वर्ष थप्नुहोस्"
+    override val searchSettingsPlaceholder = "सेटिङ्स, हार्डवेयर, सुरक्षा खोज्नुहोस्..."
+    override val editProfile = "प्रोफाइल सच्याउनुहोस्"
+    override val editStoreInfo = "पसलको विवरण सच्याउनुहोस्"
+    override val currencySymbol = "मुद्रा चिन्ह (Currency Symbol)"
+    override val taxCalculationMode = "कर हिसाब गर्ने तरिका (Tax Mode)"
+    override val notSet = "सेट गरिएको छैन"
+    override val noActiveFiscalYear = "कुनै चालु आर्थिक वर्ष छैन"
+    override val notConfigured = "सेटअप बाँकी"
+    override val nepaliBsCycle = "नेपाली विक्रम संवत (साउन १ - असार मसान्त)"
+    override val firstInvoicePreview = "पहिलो बिलको नमुना:"
+    override val invoicePrefixLabel = "बिल प्रिफिक्स (जस्तै INV)"
+    override val setActive = "चालु (Active) बनाउनुहोस्"
+    override val reopen = "पुन: खोल्नुहोस् (Reopen)"
+    override val billsIssuedCount = { count: Long -> "$count बिल काटियो" }
+    override val staffMembersCount = { count: Int -> "कर्मचारीहरू ($count)" }
+    override val acceptedPaymentMethods = "स्वीकृत भुक्तानी माध्यमहरू"
+    override val cashPaymentMethod = "नगद र फिर्ता हिसाब (Cash Drawer)"
+    override val cardPaymentMethod = "कार्ड मेसिन (Visa / Mastercard)"
+    override val qrPaymentMethod = "डिजिटल क्युआर र वालेट (eSewa / Khalti)"
+    override val creditPaymentMethod = "उधारो खाता (Store Credit)"
+    override val checkoutPolicies = "बिलिङ नीति र नियमहरू"
+    override val maxDiscountLimit = "क्यासियरले दिनपाउने अधिकतम छुट (%)"
+    override val autoPrintReceiptSwitch = "बिल काटेपछि आफैँ प्रिन्ट गर्ने (Auto-Print)"
+    override val saveCheckoutSetup = "चेकआउट सेटिङ्स सेभ गर्नुहोस्"
+    override val lowStockThresholdLabel = "न्यून मौज्दात अलर्ट मात्रा (Low Stock Alert)"
+    override val negativeStockPolicy = "सामान नहुँदा (Negative Stock) बिक्री नीति"
+    override val stockBlock = "रोक्ने (BLOCK)"
+    override val stockWarn = "चेतावनी (WARN)"
+    override val stockAllow = "दिने (ALLOW)"
+    override val saveInventoryRules = "इन्भेन्टरी नियमहरू सेभ गर्नुहोस्"
+    override val thermalPrinterTitle = "थर्मल रिसिप्ट प्रिन्टर (Thermal Printer)"
+    override val printerSubtitle = "ब्लुटुथ र USB OTG डाइरेक्ट ESC/POS"
+    override val scanPrinters = "प्रिन्टर खोज्नुहोस् (Scan)"
+    override val scanningPrinters = "खोज्दै..."
+    override val connectedPrinterTitle = "जोडिएको थर्मल प्रिन्टर"
+    override val printerPairedDisconnected = "प्रिन्टर पेयर भएको छ (तर जोडिएको छैन)"
+    override val noPrinterConnected = "कुनै थर्मल प्रिन्टर जोडिएको छैन"
+    override val pairPrinterHint = "मोबाइलको ब्लुटुथ सेटिङ्समा गएर प्रिन्टर पेयर गर्नुहोस्"
+    override val disconnect = "विच्छेद गर्नुहोस् (Disconnect)"
+    override val pairDevice = "पेयर गर्नुहोस् (Pair)"
+    override val connectNow = "अहिले जोड्नुहोस् (Connect)"
+    override val detectedPrintersCount = { count: Int -> "भेटिएका थर्मल प्रिन्टरहरू ($count):" }
+    override val allBluetoothDevicesCount = { count: Int -> "सबै ब्लुटुथ डिभाइसहरू ($count):" }
+    override val showAllPairedDevices = "सबै पेयर भएका डिभाइस देखाउनुहोस्"
+    override val showPrintersOnly = "प्रिन्टर मात्र देखाउनुहोस्"
+    override val statusPaired = "पेयर भएको"
+    override val statusNearby = "नजिकै भएको"
+    override val statusActive = "सक्रिय"
+    override val btnReconnect = "पुन: जोड्नुहोस्"
+    override val btnConnect = "जोड्नुहोस्"
+    override val scanningNearbyPrinters = "वरपरका ब्लुटुथ थर्मल प्रिन्टरहरू खोज्दै..."
+    override val noPrintersFound = "कुनै प्रिन्टर भेटिएन।"
+    override val pairPrinterInstructions = "ब्लुटुथ सेटिङ्समा गएर प्रिन्टर पेयर गर्नुहोस्, अनि 'खोज्नुहोस्' थिच्नुहोस्।"
+    override val bluetoothSettingsButton = "ब्लुटुथ सेटिङ्स खोल्नुहोस्"
+    override val printerAddressLabel = "प्रिन्टरको नाम / MAC Address"
+    override val paperWidth = "कागजको चौडाइ (Paper Width)"
+    override val autoPrintCheckoutTitle = "अटो-प्रिन्ट (Auto-Print)"
+    override val autoPrintCheckoutDesc = "बिक्री पूरा भएपछि आफैँ बिल प्रिन्ट गर्ने"
+    override val cashDrawerPulseTitle = "क्यास ड्रअर खोल्ने (Pulse)"
+    override val cashDrawerPulseDesc = "बिल छाप्दा RJ11 क्यास ड्रअर आफैँ खोल्ने"
+    override val barcodeScannerSetup = "बारकोड स्क्यानर सेटअप"
+    override val barcodeScannerMode = "बारकोड स्क्यानर इमुलेसन मोड (Emulation Mode)"
+    override val kickDrawer = "क्यास ड्रअर खोल्नुहोस्"
+    override val autoLockTimerTitle = "अटो-लक टाइमर (Auto-Lock Timer)"
+    override val autoLockTimerDesc = "केही समय चलाइएन भने सुरक्षित लक स्क्रिनमा जाने"
+    override val biometricUnlockTitle = "फिंगरप्रिन्ट अनलक (Biometric)"
+    override val biometricUnlockDesc = "फिंगरप्रिन्ट वा फेस आइडीले रजिस्टर अनलक गर्ने"
+    override val biometricLoginTitle = "फिंगरप्रिन्ट लगइन (Biometric Login)"
+    override val autoLogoutTimerTitle = "लगइन सेसन टाइमआउट (Auto-Logout)"
+    override val autoLogoutTimerDesc = "लामो समय नचलाउँदा आफैँ लगआउट हुने"
+    override val enforceStrongPinTitle = "बलियो PIN अनिवार्य गर्ने"
+    override val enforceStrongPinDesc = "कमजोर PIN (जस्तै 1234, 0000) राख्न नदिने"
+    override val customTimer = "+ अनुकूल समय राख्नुहोस्"
+    override val customTimerWithInterval = { interval: String -> "अनुकूल ($interval)" }
+    override val saveSecuritySettings = "सुरक्षा सेटिङ्स सेभ गर्नुहोस्"
+    override val customAutoLockTimer = "अनुकूल अटो-लक समय (Custom Auto-Lock)"
+    override val customLockMinutesDesc = "कति मिनेट नचलाउँदा लक गर्ने, समय राख्नुहोस्:"
+    override val minutesExample = "मिनेट (जस्तै ३, ७, १२)"
+    override val customAutoLogoutTimer = "अनुकूल लगआउट समय (Custom Auto-Logout)"
+    override val customLogoutMinutesDesc = "कति मिनेट नचलाउँदा लगआउट गर्ने, समय राख्नुहोस्:"
+    override val logoutMinutesExample = "मिनेट (जस्तै ४५, ९०, १२०)"
+    override val auditLogsGroupTitle = "सिस्टम अडिट र लगहरू (Audit Logs)"
+    override val auditTrailTitle = { count: Int -> "अडिट ट्रेल र गतिविधि लग ($count)" }
+    override val auditTrailDesc = "सुरक्षा रेकर्डहरू र सेटिङ्स परिवर्तनको लग"
+    override val viewAuditLogs = "अडिट लग हेर्नुहोस्"
+    override val fullBackupTitle = "सम्पूर्ण डाटाबेस ब्याकअप (Full Backup)"
+    override val fullBackupDesc = "सबै सामान, ग्राहक, उधारो खाता, बिक्री रेकर्ड, र सेटिङ्सलाई जिमेलमा सुरक्षित पठाउनुहोस् वा रिस्टोर गर्नुहोस्।"
+    override val linkedBackupGmail = "जोडिएको ब्याकअप जिमेल (Linked Gmail)"
+    override val noBackupEmailLinked = "ब्याकअपको लागि कुनै जिमेल जोडिएको छैन"
+    override val linkGmail = "जिमेल जोड्नुहोस्"
+    override val changeGmail = "जिमेल परिवर्तन गर्नुहोस्"
+    override val sendBackupToGmail = "जिमेलमा सुरक्षित ब्याकअप पठाउनुहोस्"
+    override val exportLocalJson = "लोकल JSON ब्याकअप सेभ गर्नुहोस्"
+    override val restoreBackupJson = "ब्याकअप JSON बाट रिस्टोर गर्नुहोस्"
+    override val firestoreSyncGroupTitle = "क्लाउड फायरस्टोर सिंक्रोनाइजेसन (Cloud Sync)"
+    override val firestoreCollectionsTitle = "फायरबेस फायरस्टोर संरचना (Firebase Schema)"
+    override val firestoreSyncDesc = "सबै १९ कलेक्सनहरू (ग्राहक, सामान, बिक्री, खाता आदि) सुरक्षित रूपमा क्लाउड फायरस्टोरमा सिंक गर्नुहोस्।"
+    override val activeStoreIdLabel = "चालु पसलको आइडी (Store ID):"
+    override val syncStatusMessageLabel = "सिंक अवस्था (Sync Status):"
+    override val pendingOutboxLabel = "बाँकी सिंक रेकर्ड (Pending Queue):"
+    override val pendingRecordsCount = { count: Int -> "$count रेकर्ड" }
+    override val collectionsAutoSynced = "१९ कलेक्सनहरू अटो-सिंक भए:"
+    override val syncAllCollections = "सबै कलेक्सन फायरबेसमा सिंक गर्नुहोस्"
+    override val fullCloudSync = "फुल क्लाउड सिंक (Full Sync)"
+    override val logoutFromPos = "POS बाट लगआउट गर्नुहोस्"
+    override val editUserProfile = "युजर प्रोफाइल सच्याउनुहोस्"
+    override val saveChanges = "परिवर्तनहरू सेभ गर्नुहोस्"
+    override val changeSecurityPin = "सुरक्षा PIN परिवर्तन गर्नुहोस्"
+    override val changePinInstruction = "४ वा सोभन्दा बढी अङ्कको नयाँ PIN राख्नुहोस्। (1234 वा 0000 जस्ता सजिला PIN राख्न पाइँदैन।)"
+    override val currentPin = "पुरानो PIN"
+    override val newPin = "नयाँ PIN (कम्तिमा ४ अङ्क)"
+    override val updatePin = "PIN अपडेट गर्नुहोस्"
+    override val securityAuditLogs = "सुरक्षा र अडिट लगहरू"
+    override val filterLogsPlaceholder = "लगहरू फिल्टर गर्नुहोस्..."
+    override val noAuditLogsFound = "कुनै अडिट लग रेकर्ड भेटिएन।"
+    override val switchTillOperator = "काउन्टर अपरेटर परिवर्तन गर्नुहोस्"
+    override val switchOperatorInstruction = "आउने कर्मचारी छान्नुहोस् र उहाँको ४-अङ्कको PIN राख्नुहोस्:"
+    override val operatorPin = "अपरेटरको PIN"
+    override val verifyAndSwitch = "प्रमाणित गरी परिवर्तन गर्नुहोस्"
+    override val editStoreProfile = "Edit Store Profile"
+    override val saveStoreSettings = "Save Store Settings"
+    override val removeStaffTitle = "Remove Staff Member?"
+    override val removeStaffConfirm = { name: String, email: String -> "Are you sure you want to remove $name ($email)? They will lose access immediately." }
+    override val removeStaff = "Remove Staff"
+    override val linkGmailTitle = "Link Gmail for Cloud Backups"
+    override val linkGmailSubtitle = "Enter the Gmail address where your encrypted store database backups will be sent."
+    override val gmailAddress = "Gmail Address"
+    override val useSignedInGoogleAccount = { email: String -> "Use Signed-in Google Account ($email)" }
+    override val saveAndLink = "Save & Link"
+    override val restoreDatabaseTitle = "Restore Database from Backup?"
+    override val restoreDatabaseConfirmDesc = { storeName: String -> "You are about to restore data into store '$storeName'. This will merge and update records with the contents of this backup file." }
+    override val backupMetadata = "Backup Metadata:"
+    override val totalRecordsProceed = { count: Int -> "Total records to import: $count. Proceed?" }
+    override val confirmAndRestore = "Confirm & Restore"
+    override val restoring = "Restoring..."
 
     override val addStaffMember = "Add Staff Member"
     override val addStaffSubtitle = "Assign operator credentials & store access role"
@@ -1498,6 +1768,141 @@ object NepaliStrings : PosStrings {
     override val saveFiscalYear = "सुरक्षित गर्नुहोस्"
     override val configuredFiscalYears = { count: Int -> "कन्फिगर गरिएका आर्थिक वर्षहरू ($count)" }
     override val addFiscalYearShort = "+ नयाँ आ.व."
+    override val searchSettingsPlaceholder = "सेटिङ्स, हार्डवेयर, सुरक्षा खोज्नुहोस्..."
+    override val editProfile = "प्रोफाइल सम्पादन"
+    override val editStoreInfo = "पसल विवरण सम्पादन"
+    override val currencySymbol = "मुद्रा चिन्ह"
+    override val taxCalculationMode = "कर गणना विधि"
+    override val notSet = "सेट गरिएको छैन"
+    override val noActiveFiscalYear = "कुनै सक्रिय आ.व. छैन"
+    override val notConfigured = "कन्फिगर गरिएको छैन"
+    override val nepaliBsCycle = "नेपाली वि.सं. चक्र (साउन १ - असार मसान्त)"
+    override val firstInvoicePreview = "पहिलो बिल पूर्वावलोकन:"
+    override val invoicePrefixLabel = "बिल उपसर्ग (Prefix जस्तै INV)"
+    override val setActive = "सक्रिय बनाउनुहोस्"
+    override val reopen = "पुनः खोल्नुहोस्"
+    override val billsIssuedCount = { count: Long -> "$count जारी गरिएका बिलहरू" }
+    override val staffMembersCount = { count: Int -> "कर्मचारीहरू ($count)" }
+    override val acceptedPaymentMethods = "स्वीकृत भुक्तानी विधिहरू"
+    override val cashPaymentMethod = "नगद भुक्तानी र फिर्ता हिसाब (Cash Drawer)"
+    override val cardPaymentMethod = "कार्ड टर्मिनल (Visa / Mastercard)"
+    override val qrPaymentMethod = "डिजिटल क्यूआर र वालेटहरू (eSewa / Khalti / Fonepay)"
+    override val creditPaymentMethod = "उधारो खाता (Customer Due / Khata Ledger)"
+    override val checkoutPolicies = "चेकआउट नीति र रसिद नोटहरू"
+    override val maxDiscountLimit = "अधिकतम क्यासियर छुट सीमा (%)"
+    override val autoPrintReceiptSwitch = "बिक्रीपछि स्वतः रसिद प्रिन्ट गर्नुहोस्"
+    override val saveCheckoutSetup = "चेकआउट सेटिङ्स सुरक्षित गर्नुहोस्"
+    override val lowStockThresholdLabel = "न्यूनतम मौज्दात अलर्ट सीमा (एकाइ संख्या)"
+    override val negativeStockPolicy = "ऋणात्मक मौज्दात बिक्री नीति (Negative Stock)"
+    override val stockBlock = "रोक्नुहोस् (बिक्री निषेध)"
+    override val stockWarn = "सचेत गर्नुहोस् (चेतावनी)"
+    override val stockAllow = "अनुमति दिनुहोस्"
+    override val saveInventoryRules = "मौज्दात नियम सुरक्षित गर्नुहोस्"
+    override val thermalPrinterTitle = "थर्मल रसिद प्रिन्टर"
+    override val printerSubtitle = "ब्लुटुथ SPP र USB OTG डायरेक्ट ESC/POS"
+    override val scanPrinters = "उपकरण खोज्नुहोस्"
+    override val scanningPrinters = "खोज्दैछ..."
+    override val connectedPrinterTitle = "थर्मल प्रिन्टर जोडिएको छ"
+    override val printerPairedDisconnected = "प्रिन्टर पेयर भएको (विच्छेद)"
+    override val noPrinterConnected = "कुनै प्रिन्टर जोडिएको छैन"
+    override val pairPrinterHint = "एन्ड्रोइड ब्लुटुथ सेटिङ्समा थर्मल प्रिन्टर जोडा मिलाउनुहोस्"
+    override val disconnect = "विच्छेद गर्नुहोस्"
+    override val pairDevice = "उपकरण जोड्नुहोस्"
+    override val connectNow = "अहिलै जोड्नुहोस्"
+    override val detectedPrintersCount = { count: Int -> "पत्ता लागेका थर्मल प्रिन्टरहरू ($count):" }
+    override val allBluetoothDevicesCount = { count: Int -> "सबै ब्लुटुथ उपकरणहरू ($count):" }
+    override val showAllPairedDevices = "सबै जोडिएका उपकरण देखाउनुहोस्"
+    override val showPrintersOnly = "प्रिन्टरहरू मात्र देखाउनुहोस्"
+    override val statusPaired = "जोडिएको"
+    override val statusNearby = "नजिकै"
+    override val statusActive = "सक्रिय"
+    override val btnReconnect = "पुनः जोड्नुहोस्"
+    override val btnConnect = "जोड्नुहोस्"
+    override val scanningNearbyPrinters = "नजिकैका ब्लुटुथ थर्मल प्रिन्टरहरू खोज्दैछ..."
+    override val noPrintersFound = "कुनै प्रिन्टर फेला परेन।"
+    override val pairPrinterInstructions = "ब्लुटुथ सेटिङ्समा प्रिन्टर जोड्नुहोस्, अनि स्क्यान थिच्नुहोस्।"
+    override val bluetoothSettingsButton = "ब्लुटुथ सेटिङ्स"
+    override val printerAddressLabel = "सक्रिय प्रिन्टर नाम / MAC ठेगाना"
+    override val paperWidth = "रोल कागजको चौडाइ"
+    override val autoPrintCheckoutTitle = "चेकआउटमा स्वतः प्रिन्ट"
+    override val autoPrintCheckoutDesc = "बिक्री सम्पन्न हुनासाथ स्वतः रसिद छाप्नुहोस्"
+    override val cashDrawerPulseTitle = "क्यास ड्रअर स्वतः खोल्ने पल्स"
+    override val cashDrawerPulseDesc = "चेकआउट गर्दा RJ11 ड्रअर पिन ट्रिगर गर्नुहोस्"
+    override val barcodeScannerSetup = "बारकोड स्क्यानर सेटअप"
+    override val barcodeScannerMode = "बारकोड स्क्यानर इम्युलेसन मोड"
+    override val kickDrawer = "घर्रा खोल्नुहोस्"
+    override val autoLockTimerTitle = "टर्मिनल स्वतः लक समय"
+    override val autoLockTimerDesc = "केही समय प्रयोग नभए काउन्टरलाई द्रुत-पिन स्क्रिनमा लक गर्नुहोस्"
+    override val biometricUnlockTitle = "बायोमेट्रिक टर्मिनल अनलक"
+    override val biometricUnlockDesc = "उपकरणको औंठाछाप सेन्सरद्वारा काउन्टर अनलक गर्नुहोस्"
+    override val biometricLoginTitle = "बायोमेट्रिक लगिन प्रमाणीकरण"
+    override val autoLogoutTimerTitle = "लगिन सेसन समय समाप्ति (स्वतः लगआउट)"
+    override val autoLogoutTimerDesc = "धेरै समय निष्क्रिय रहेमा स्वतः लगिन स्क्रिनमा फर्कनुहोस्"
+    override val enforceStrongPinTitle = "बलियो र फरक पिन अनिवार्य गर्नुहोस्"
+    override val enforceStrongPinDesc = "कमजोर पूर्वनिर्धारित पिनहरू (जस्तै १२३४, ००००) निषेध गर्नुहोस्"
+    override val customTimer = "+ अनुकूलित समय"
+    override val customTimerWithInterval = { interval: String -> "अनुकूलित ($interval)" }
+    override val saveSecuritySettings = "सुरक्षा सेटिङ्स सुरक्षित गर्नुहोस्"
+    override val customAutoLockTimer = "अनुकूलित स्वतः लक समय"
+    override val customLockMinutesDesc = "काउन्टर लक हुनुअघि निष्क्रिय रहने मिनेट प्रविष्ट गर्नुहोस्:"
+    override val minutesExample = "मिनेट (जस्तै ३, ७, १२)"
+    override val customAutoLogoutTimer = "अनुकूलित लगिन सेसन समय"
+    override val customLogoutMinutesDesc = "स्वतः लगआउट हुनुअघि निष्क्रिय रहने मिनेट प्रविष्ट गर्नुहोस्:"
+    override val logoutMinutesExample = "मिनेट (जस्तै ४५, ९०, १२०)"
+    override val auditLogsGroupTitle = "प्रणाली अडिट तथा लगहरू"
+    override val auditTrailTitle = { count: Int -> "अडिट तथा गतिविधि लग ($count)" }
+    override val auditTrailDesc = "डाटाबेस सुरक्षा रेकर्ड र सेटिङ्स लगहरू"
+    override val viewAuditLogs = "लगहरू हेर्नुहोस्"
+    override val fullBackupTitle = "पसलको सम्पूर्ण डाटाबेस ब्याकअप"
+    override val fullBackupDesc = "सबै उत्पादन, बारकोड, ग्राहक, उधारो खाता, बिक्री इतिहास, शिफ्ट र सेटिङ्स सुरक्षित जिमेलमा पठाउनुहोस् वा पुनःस्थापना गर्नुहोस्।"
+    override val linkedBackupGmail = "जोडिएको ब्याकअप जिमेल"
+    override val noBackupEmailLinked = "क्लाउड ब्याकअपका लागि अहिलेसम्म कुनै जिमेल जोडिएको छैन"
+    override val linkGmail = "जिमेल जोड्नुहोस्"
+    override val changeGmail = "जिमेल परिवर्तन"
+    override val sendBackupToGmail = "जिमेलमा सुरक्षित ब्याकअप पठाउनुहोस्"
+    override val exportLocalJson = "स्थानीय JSON ब्याकअप निकाल्नुहोस्"
+    override val restoreBackupJson = "JSON ब्याकअपबाट पुनःस्थापना"
+    override val firestoreSyncGroupTitle = "क्लाउड फायरस्टोर डाटाबेस सिङ्क्रोनाइजेसन"
+    override val firestoreCollectionsTitle = "फायरबेस फायरस्टोर संरचना र संग्रहहरू"
+    override val firestoreSyncDesc = "सबै १९ वटा संग्रहहरू (ग्राहक, उत्पादन, बिक्री, खाता, शिफ्ट, स्टक आदि) क्लाउड फायरस्टोरमा सिङ्क गर्नुहोस्।"
+    override val activeStoreIdLabel = "सक्रिय पसल आइडी:"
+    override val syncStatusMessageLabel = "सिङ्क स्थिति सन्देश:"
+    override val pendingOutboxLabel = "बाँकी सिङ्क क्यु:"
+    override val pendingRecordsCount = { count: Int -> "$count रेकर्ड(हरू)" }
+    override val collectionsAutoSynced = "१९ संग्रहहरू स्वतः सिङ्क:"
+    override val syncAllCollections = "सबै संग्रह फायरबेसमा सिङ्क गर्नुहोस्"
+    override val fullCloudSync = "पूर्ण क्लाउड सिङ्क"
+    override val logoutFromPos = "POS बाट लगआउट गर्नुहोस्"
+    override val editUserProfile = "कर्मचारी प्रोफाइल सम्पादन"
+    override val saveChanges = "परिवर्तनहरू सुरक्षित गर्नुहोस्"
+    override val changeSecurityPin = "सुरक्षा पिन परिवर्तन"
+    override val changePinInstruction = "कम्तीमा ४ अंकको फरक सुरक्षा पिन छान्नुहोस्। '1234' वा '0000' जस्ता कमजोर पिन निषेध छन्।"
+    override val currentPin = "हालको पिन"
+    override val newPin = "नयाँ पिन (कम्तीमा ४ अंक)"
+    override val updatePin = "पिन अद्यावधिक गर्नुहोस्"
+    override val securityAuditLogs = "सुरक्षा तथा अडिट लगहरू"
+    override val filterLogsPlaceholder = "कार्य वा कर्मचारी अनुसार खोज्नुहोस्..."
+    override val noAuditLogsFound = "कुनै अडिट लग भेटिएन।"
+    override val switchTillOperator = "काउन्टर अपरेटर परिवर्तन"
+    override val switchOperatorInstruction = "आउने कर्मचारी छान्नुहोस् र उहाँको ४ अंकको पिन प्रविष्ट गर्नुहोस्:"
+    override val operatorPin = "अपरेटर पिन"
+    override val verifyAndSwitch = "जाँच गरी परिवर्तन गर्नुहोस्"
+    override val editStoreProfile = "पसल विवरण सम्पादन"
+    override val saveStoreSettings = "पसल सेटिङ्स सुरक्षित गर्नुहोस्"
+    override val removeStaffTitle = "कर्मचारी हटाउने?"
+    override val removeStaffConfirm = { name: String, email: String -> "के तपाईं निश्चित रूपमा $name ($email) लाई हटाउन चाहनुहुन्छ? उहाँको पहुँच तुरुन्त बन्द हुनेछ।" }
+    override val removeStaff = "कर्मचारी हटाउनुहोस्"
+    override val linkGmailTitle = "क्लाउड ब्याकअपका लागि जिमेल जोड्नुहोस्"
+    override val linkGmailSubtitle = "इन्क्रिप्टेड स्टोर डाटाबेस ब्याकअप पठाइने जिमेल ठेगाना प्रविष्ट गर्नुहोस्।"
+    override val gmailAddress = "जिमेल ठेगाना"
+    override val useSignedInGoogleAccount = { email: String -> "लगइन भएको गुगल खाता प्रयोग गर्नुहोस् ($email)" }
+    override val saveAndLink = "सुरक्षित गरी जोड्नुहोस्"
+    override val restoreDatabaseTitle = "ब्याकअपबाट डाटा पुनःस्थापना गर्ने?"
+    override val restoreDatabaseConfirmDesc = { storeName: String -> "तपाईं '$storeName' पसलमा डाटा पुनःस्थापना गर्न लाग्नुभएको छ। यसले यस ब्याकअप फाइलका सामग्रीहरू थप र अद्यावधिक गर्नेछ।" }
+    override val backupMetadata = "ब्याकअप विवरण:"
+    override val totalRecordsProceed = { count: Int -> "आयात गरिने कुल रेकर्डहरू: $count। अघि बढ्ने?" }
+    override val confirmAndRestore = "पुष्टि गरी पुनःस्थापना गर्नुहोस्"
+    override val restoring = "पुनःस्थापना हुँदैछ..."
 
     override val addStaffMember = "नयाँ कर्मचारी थप्नुहोस्"
     override val addStaffSubtitle = "कर्मचारीको विवरण र जिम्मेवारी पद निर्धारण गर्नुहोस्"

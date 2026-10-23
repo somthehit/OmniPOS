@@ -131,6 +131,7 @@ dependencies {
   implementation(libs.retrofit)
   implementation("net.zetetic:android-database-sqlcipher:4.5.4")
   implementation("androidx.sqlite:sqlite-ktx:2.4.0")
+  implementation("com.google.zxing:core:3.5.3")
   testImplementation(libs.androidx.compose.ui.test.junit4)
   testImplementation(libs.androidx.core)
   testImplementation(libs.androidx.junit)

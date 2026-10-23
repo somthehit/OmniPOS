@@ -724,50 +724,12 @@ fun InternalBarcodeLabelDialog(
                         .fillMaxWidth()
                         .padding(vertical = 8.dp)
                 ) {
-                    Column(
-                        modifier = Modifier.padding(16.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Text(
-                            text = product.name,
-                            fontWeight = FontWeight.Bold,
-                            color = Color.Black,
-                            style = MaterialTheme.typography.bodyMedium
-                        )
-                        Text(
-                            text = "SKU: ${product.sku}",
-                            fontSize = 11.sp,
-                            color = Color.DarkGray
-                        )
-                        Spacer(modifier = Modifier.height(10.dp))
-
-                        Row(
-                            modifier = Modifier
-                                .height(48.dp)
-                                .fillMaxWidth(0.9f),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            barcodeValue.forEachIndexed { i, ch ->
-                                val barWidth = if (ch.code % 2 == 0) 3.dp else 1.5.dp
-                                Box(
-                                    modifier = Modifier
-                                        .height(48.dp)
-                                        .width(barWidth)
-                                        .background(Color.Black)
-                                )
-                            }
-                        }
-
-                        Spacer(modifier = Modifier.height(6.dp))
-                        Text(
-                            text = barcodeValue,
-                            fontFamily = FontFamily.Monospace,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 13.sp,
-                            color = Color.Black
-                        )
-                    }
+                    BarcodeLabelPreview(
+                        name = product.name,
+                        sku = product.sku,
+                        code = barcodeValue,
+                        modifier = Modifier.padding(16.dp)
+                    )
                 }
             }
         },
