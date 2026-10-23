@@ -24,6 +24,7 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Inventory
+import androidx.compose.material.icons.filled.QrCode
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.Button
@@ -66,6 +67,7 @@ import com.example.pos.data.local.ProductEntity
 import com.example.pos.data.model.MovementType
 import com.example.pos.domain.CartCalculator
 import com.example.pos.ui.PosViewModel
+import com.example.pos.ui.components.ProductDetailDialog
 import com.example.pos.ui.components.StockInFormDialog
 import com.example.pos.ui.i18n.LocalPosStrings
 import com.example.pos.ui.i18n.NepaliStrings
@@ -90,6 +92,7 @@ fun InventoryScreen(viewModel: PosViewModel) {
     var selectedTab by remember { mutableStateOf(0) } // 0: Products Stock, 1: Ledger History
     var selectedProductForAdjustment by remember { mutableStateOf<ProductEntity?>(null) }
     var selectedProductForStockIn by remember { mutableStateOf<ProductEntity?>(null) }
+    var selectedProductForDetail by remember { mutableStateOf<ProductEntity?>(null) }
     var showReceiveDialog by remember { mutableStateOf(false) }
     var searchQuery by remember { mutableStateOf("") }
 
@@ -255,7 +258,9 @@ fun InventoryScreen(viewModel: PosViewModel) {
                             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
                             elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
                             shape = RoundedCornerShape(12.dp),
-                            modifier = Modifier.fillMaxWidth()
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable { selectedProductForDetail = product }
                         ) {
                             Column(
                                 modifier = Modifier.padding(14.dp),
@@ -387,6 +392,16 @@ fun InventoryScreen(viewModel: PosViewModel) {
                                             contentPadding = PaddingValues(horizontal = 10.dp, vertical = 4.dp),
                                             testTag = "adjust_stock_btn_${product.sku}",
                                             onClick = { selectedProductForAdjustment = product }
+                                        )
+
+                                        PosOutlineButton(
+                                            text = if (strings is NepaliStrings) "बारकोड" else "Barcode",
+                                            icon = Icons.Default.QrCode,
+                                            height = 34.dp,
+                                            shape = RoundedCornerShape(8.dp),
+                                            contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp),
+                                            testTag = "barcode_btn_${product.sku}",
+                                            onClick = { selectedProductForDetail = product }
                                         )
                                     }
                                 }
@@ -536,5 +551,18 @@ fun InventoryScreen(viewModel: PosViewModel) {
                 }
             }
         }
+    }
+
+    // Product Detail & Printable Barcode Dialog
+    selectedProductForDetail?.let { prod ->
+        val stockQty = remember(movements, prod.id) {
+            movements.filter { it.productId == prod.id }.sumOf { it.quantityDelta }
+        }
+        ProductDetailDialog(
+            product = prod,
+            stockQty = stockQty,
+            currencySymbol = currency,
+            onDismiss = { selectedProductForDetail = null }
+        )
     }
 }

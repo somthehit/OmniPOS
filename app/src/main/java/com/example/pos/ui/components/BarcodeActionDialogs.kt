@@ -25,7 +25,9 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Link
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.filled.QrCode
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Search
@@ -66,6 +68,9 @@ import kotlinx.coroutines.launch
 import com.example.pos.data.local.ProductEntity
 import com.example.pos.domain.BarcodeUtils
 import com.example.pos.domain.CartCalculator
+import com.example.ui.theme.Slate700
+import com.example.ui.theme.Slate900
+import androidx.compose.foundation.layout.widthIn
 import com.example.ui.theme.PosEmerald
 import com.example.ui.theme.PosPrimary
 import com.example.ui.theme.PosRose
@@ -808,4 +813,209 @@ fun InternalBarcodeLabelDialog(
             }
         }
     )
+}
+
+@Composable
+fun ProductDetailDialog(
+    product: ProductEntity,
+    stockQty: Int,
+    currencySymbol: String,
+    onDismiss: () -> Unit
+) {
+    val strings = LocalPosStrings.current
+    val isNepali = strings is NepaliStrings
+    val context = androidx.compose.ui.platform.LocalContext.current
+    val coroutineScope = androidx.compose.runtime.rememberCoroutineScope()
+    var isPrinting by remember { mutableStateOf(false) }
+
+    val barcodeValue = remember(product) {
+        if (product.barcode.isNotBlank()) product.barcode else BarcodeUtils.generateInternalCode128(product.sku)
+    }
+
+    Dialog(onDismissRequest = onDismiss) {
+        Surface(
+            shape = RoundedCornerShape(16.dp),
+            color = MaterialTheme.colorScheme.surface,
+            tonalElevation = 8.dp,
+            modifier = Modifier
+                .fillMaxWidth()
+                .widthIn(max = 520.dp)
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .verticalScroll(rememberScrollState())
+                    .padding(20.dp),
+                verticalArrangement = Arrangement.spacedBy(14.dp)
+            ) {
+                // Header
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.weight(1f)) {
+                        Box(
+                            modifier = Modifier
+                                .size(40.dp)
+                                .clip(CircleShape)
+                                .background(PosPrimary.copy(alpha = 0.12f)),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(Icons.Default.Info, contentDescription = null, tint = PosPrimary, modifier = Modifier.size(20.dp))
+                        }
+                        Spacer(modifier = Modifier.width(10.dp))
+                        Column {
+                            Text(
+                                text = product.name,
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.Bold,
+                                color = Slate900
+                            )
+                            Text(
+                                text = "ID: ${product.id}",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = Color(0xFF64748B)
+                            )
+                        }
+                    }
+
+                    IconButton(onClick = onDismiss) {
+                        Icon(Icons.Default.Close, contentDescription = "Close", tint = Color(0xFF94A3B8))
+                    }
+                }
+
+                HorizontalDivider(color = Color(0xFFE2E8F0))
+
+                // Product Metrics Summary Cards
+                Card(
+                    colors = CardDefaults.cardColors(containerColor = Color(0xFFF8FAFC)),
+                    border = BorderStroke(1.dp, Color(0xFFE2E8F0)),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Column(modifier = Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                            Text(if (isNepali) "SKU कोड:" else "SKU Code:", style = MaterialTheme.typography.bodySmall, color = Color(0xFF64748B))
+                            Text(product.sku, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.bodySmall, color = Slate900)
+                        }
+                        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                            Text(if (isNepali) "बारकोड:" else "Barcode:", style = MaterialTheme.typography.bodySmall, color = Color(0xFF64748B))
+                            Text(barcodeValue, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.bodySmall, color = Slate900)
+                        }
+                        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                            Text(if (isNepali) "लागत मूल्य (Cost):" else "Cost Price:", style = MaterialTheme.typography.bodySmall, color = Color(0xFF64748B))
+                            Text(CartCalculator.formatMoney(product.costPriceInCents, currencySymbol), fontWeight = FontWeight.SemiBold, color = Slate700)
+                        }
+                        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                            Text(if (isNepali) "बिक्री मूल्य (Sell):" else "Selling Price:", style = MaterialTheme.typography.bodySmall, color = Color(0xFF64748B))
+                            Text(CartCalculator.formatMoney(product.sellingPriceInCents, currencySymbol), fontWeight = FontWeight.Bold, color = PosPrimary)
+                        }
+                        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                            Text(if (isNepali) "बिक्री कर (Tax Rate):" else "Tax Rate:", style = MaterialTheme.typography.bodySmall, color = Color(0xFF64748B))
+                            Text("${product.taxRatePercent}%", fontWeight = FontWeight.SemiBold, color = Slate700)
+                        }
+                        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                            Text(if (isNepali) "मौज्दात स्थिति (Stock):" else "Stock On Hand:", style = MaterialTheme.typography.bodySmall, color = Color(0xFF64748B))
+                            Text("$stockQty ${product.unit}", fontWeight = FontWeight.Bold, color = if (stockQty <= product.minStockAlert) PosRose else PosEmerald)
+                        }
+                    }
+                }
+
+                // Barcode Preview Section
+                Text(
+                    text = if (isNepali) "स्क्यानयोग्य बारकोड लेबल (Printable Label)" else "Scannable Printable Barcode Label",
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.Bold,
+                    color = Slate900
+                )
+
+                Surface(
+                    shape = RoundedCornerShape(12.dp),
+                    color = Color.White,
+                    border = BorderStroke(1.5.dp, Color.Black),
+                    shadowElevation = 2.dp,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    BarcodeLabelPreview(
+                        name = product.name,
+                        sku = product.sku,
+                        code = barcodeValue,
+                        modifier = Modifier.padding(16.dp)
+                    )
+                }
+
+                // Action Row
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.End,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    PosOutlineButton(
+                        text = if (isNepali) "रद्द गर्नुहोस्" else "Cancel",
+                        onClick = onDismiss
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    PosGradientButton(
+                        text = if (isNepali) "प्रिन्ट लेबल (Print)" else "Print Barcode Label",
+                        icon = Icons.Default.Print,
+                        gradient = PosButtonGradients.Emerald,
+                        height = 44.dp,
+                        onClick = {
+                            isPrinting = true
+                            coroutineScope.launch(kotlinx.coroutines.Dispatchers.IO) {
+                                try {
+                                    val bmp = BarcodeRenderer.label(product.name, product.sku, barcodeValue)
+                                    val pdfFile = buildLabelPdf(context, bmp, 1)
+                                    kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.Main) {
+                                        val printManager = context.getSystemService(android.content.Context.PRINT_SERVICE) as android.print.PrintManager
+                                        val printAdapter = object : android.print.PrintDocumentAdapter() {
+                                            override fun onLayout(
+                                                oldAttributes: android.print.PrintAttributes?,
+                                                newAttributes: android.print.PrintAttributes,
+                                                cancellationSignal: android.os.CancellationSignal?,
+                                                callback: LayoutResultCallback,
+                                                extras: android.os.Bundle?
+                                            ) {
+                                                if (cancellationSignal?.isCanceled == true) {
+                                                    callback.onLayoutCancelled()
+                                                    return
+                                                }
+                                                val info = android.print.PrintDocumentInfo.Builder(pdfFile.name)
+                                                    .setContentType(android.print.PrintDocumentInfo.CONTENT_TYPE_DOCUMENT)
+                                                    .build()
+                                                callback.onLayoutFinished(info, true)
+                                            }
+
+                                            override fun onWrite(
+                                                pages: Array<out android.print.PageRange>,
+                                                destination: android.os.ParcelFileDescriptor,
+                                                cancellationSignal: android.os.CancellationSignal?,
+                                                callback: WriteResultCallback
+                                            ) {
+                                                try {
+                                                    java.io.FileInputStream(pdfFile).use { input ->
+                                                        java.io.FileOutputStream(destination.fileDescriptor).use { output ->
+                                                            input.copyTo(output)
+                                                        }
+                                                    }
+                                                    callback.onWriteFinished(arrayOf(android.print.PageRange.ALL_PAGES))
+                                                } catch (e: Exception) {
+                                                    callback.onWriteFailed(e.message)
+                                                }
+                                            }
+                                        }
+                                        printManager.print("Label_${product.sku}", printAdapter, android.print.PrintAttributes.Builder().build())
+                                    }
+                                } catch (e: Exception) {
+                                    e.printStackTrace()
+                                } finally {
+                                    isPrinting = false
+                                }
+                            }
+                        }
+                    )
+                }
+            }
+        }
+    }
 }
