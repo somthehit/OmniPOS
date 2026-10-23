@@ -61,6 +61,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.material.icons.filled.Print
+import kotlinx.coroutines.launch
 import com.example.pos.data.local.ProductEntity
 import com.example.pos.domain.BarcodeUtils
 import com.example.pos.domain.CartCalculator
@@ -734,13 +736,76 @@ fun InternalBarcodeLabelDialog(
             }
         },
         confirmButton = {
-            PosGradientButton(
-                text = if (isNepali) "सकियो" else "Done",
-                icon = Icons.Default.Check,
-                iconBadge = false,
-                height = 44.dp,
-                onClick = onDismiss
-            )
+            val context = androidx.compose.ui.platform.LocalContext.current
+            var isPrinting by remember { mutableStateOf(false) }
+            val coroutineScope = androidx.compose.runtime.rememberCoroutineScope()
+
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                PosOutlineButton(
+                    text = if (isNepali) "प्रिन्ट (Print)" else "Print",
+                    icon = Icons.Default.Print,
+                    onClick = {
+                        isPrinting = true
+                        coroutineScope.launch(kotlinx.coroutines.Dispatchers.IO) {
+                            try {
+                                val bmp = BarcodeRenderer.label(product.name, product.sku, barcodeValue)
+                                val pdfFile = buildLabelPdf(context, bmp, 1)
+                                kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.Main) {
+                                    val printManager = context.getSystemService(android.content.Context.PRINT_SERVICE) as android.print.PrintManager
+                                    val printAdapter = object : android.print.PrintDocumentAdapter() {
+                                        override fun onLayout(
+                                            oldAttributes: android.print.PrintAttributes?,
+                                            newAttributes: android.print.PrintAttributes,
+                                            cancellationSignal: android.os.CancellationSignal?,
+                                            callback: LayoutResultCallback,
+                                            extras: android.os.Bundle?
+                                        ) {
+                                            if (cancellationSignal?.isCanceled == true) {
+                                                callback.onLayoutCancelled()
+                                                return
+                                            }
+                                            val info = android.print.PrintDocumentInfo.Builder(pdfFile.name)
+                                                .setContentType(android.print.PrintDocumentInfo.CONTENT_TYPE_DOCUMENT)
+                                                .build()
+                                            callback.onLayoutFinished(info, true)
+                                        }
+
+                                        override fun onWrite(
+                                            pages: Array<out android.print.PageRange>,
+                                            destination: android.os.ParcelFileDescriptor,
+                                            cancellationSignal: android.os.CancellationSignal?,
+                                            callback: WriteResultCallback
+                                        ) {
+                                            try {
+                                                java.io.FileInputStream(pdfFile).use { input ->
+                                                    java.io.FileOutputStream(destination.fileDescriptor).use { output ->
+                                                        input.copyTo(output)
+                                                    }
+                                                }
+                                                callback.onWriteFinished(arrayOf(android.print.PageRange.ALL_PAGES))
+                                            } catch (e: Exception) {
+                                                callback.onWriteFailed(e.message)
+                                            }
+                                        }
+                                    }
+                                    printManager.print("Label_${product.sku}", printAdapter, android.print.PrintAttributes.Builder().build())
+                                }
+                            } catch (e: Exception) {
+                                e.printStackTrace()
+                            } finally {
+                                isPrinting = false
+                            }
+                        }
+                    }
+                )
+                PosGradientButton(
+                    text = if (isNepali) "सकियो" else "Done",
+                    icon = Icons.Default.Check,
+                    iconBadge = false,
+                    height = 44.dp,
+                    onClick = onDismiss
+                )
+            }
         }
     )
 }

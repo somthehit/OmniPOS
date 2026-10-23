@@ -24,12 +24,15 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Inventory
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import com.example.pos.ui.components.PosButtonGradients
 import com.example.pos.ui.components.PosCompactPillButton
 import com.example.pos.ui.components.PosGradientButton
@@ -88,6 +91,7 @@ fun InventoryScreen(viewModel: PosViewModel) {
     var selectedProductForAdjustment by remember { mutableStateOf<ProductEntity?>(null) }
     var selectedProductForStockIn by remember { mutableStateOf<ProductEntity?>(null) }
     var showReceiveDialog by remember { mutableStateOf(false) }
+    var searchQuery by remember { mutableStateOf("") }
 
     Column(
         modifier = Modifier
@@ -144,6 +148,44 @@ fun InventoryScreen(viewModel: PosViewModel) {
         }
 
         Spacer(modifier = Modifier.height(12.dp))
+
+        // Search Bar
+        OutlinedTextField(
+            value = searchQuery,
+            onValueChange = { searchQuery = it },
+            placeholder = { Text(if (strings is NepaliStrings) "नाम, SKU वा बारकोडबाट खोज्नुहोस्..." else "Search by name, SKU or barcode...") },
+            leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search", tint = PosPrimary) },
+            trailingIcon = {
+                if (searchQuery.isNotEmpty()) {
+                    IconButton(onClick = { searchQuery = "" }) {
+                        Icon(Icons.Default.Clear, contentDescription = "Clear", tint = PosRose)
+                    }
+                }
+            },
+            singleLine = true,
+            shape = RoundedCornerShape(10.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .testTag("inventory_search_field")
+        )
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        val filteredProducts = remember(products, searchQuery) {
+            if (searchQuery.isBlank()) products else products.filter {
+                it.name.contains(searchQuery, ignoreCase = true) ||
+                it.sku.contains(searchQuery, ignoreCase = true) ||
+                it.barcode.contains(searchQuery, ignoreCase = true)
+            }
+        }
+        val filteredMovements = remember(movements, searchQuery) {
+            if (searchQuery.isBlank()) movements else movements.filter { move ->
+                val prod = products.find { it.id == move.productId }
+                prod != null && (prod.name.contains(searchQuery, ignoreCase = true) ||
+                                 prod.sku.contains(searchQuery, ignoreCase = true) ||
+                                 prod.barcode.contains(searchQuery, ignoreCase = true))
+            }
+        }
 
         if (selectedTab == 0) {
             if (products.isEmpty()) {
@@ -204,7 +246,7 @@ fun InventoryScreen(viewModel: PosViewModel) {
             } else {
                 // Product Stock List
                 LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    items(products, key = { it.id }) { product ->
+                    items(filteredProducts, key = { it.id }) { product ->
                         val stockQty = remember(movements, product.id) {
                             movements.filter { it.productId == product.id }.sumOf { it.quantityDelta }
                         }
@@ -356,7 +398,7 @@ fun InventoryScreen(viewModel: PosViewModel) {
         } else {
             // Movement Ledger List
             LazyColumn(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                items(movements, key = { it.id }) { move ->
+                items(filteredMovements, key = { it.id }) { move ->
                     val dateStr = SimpleDateFormat("MMM dd, HH:mm", Locale.getDefault()).format(Date(move.createdAt))
                     val isPositive = move.quantityDelta > 0
                     Card(
