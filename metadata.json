@@ -1,0 +1,6 @@
+{
+  "name": "OmniPOS",
+  "description": "Multi-tenant offline-first mobile Point of Sale system for retail, inventory, and shift accounting.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

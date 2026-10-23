@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "477871314365",
+    "firebase_url": "https://omni-pos-155fb-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "omni-pos-155fb",
+    "storage_bucket": "omni-pos-155fb.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:477871314365:android:c5e7f085d08fcfe8b06ed4",
+        "android_client_info": {
+          "package_name": "com.company.omnipos"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "477871314365-a6i3noe49dbslf4sp1hedd7dfgmeoh76.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCqlA9frvZ2VxcnoLf7knWozTe2oMwCbIU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "477871314365-a6i3noe49dbslf4sp1hedd7dfgmeoh76.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,228 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ShopFlow / OmniPOS System Blueprint & Onboarding Specification",
+  "version": "2.0.0",
+  "entities": {
+    "User": {
+      "collection": "users",
+      "path": "users/{userId}",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string" },
+        "displayName": { "type": "string" },
+        "avatarUrl": { "type": "string" },
+        "phoneNumber": { "type": "string" },
+        "language": { "type": "string" },
+        "termsAcceptedAt": { "type": "timestamp" },
+        "activeOrgId": { "type": "string" },
+        "createdAt": { "type": "timestamp" }
+      },
+      "required": ["uid", "email"]
+    },
+    "Organization": {
+      "collection": "organizations",
+      "path": "organizations/{orgId}",
+      "properties": {
+        "id": { "type": "string" },
+        "displayName": { "type": "string" },
+        "legalName": { "type": "string" },
+        "businessType": { "type": "string" },
+        "countryCode": { "type": "string" },
+        "currencyCode": { "type": "string" },
+        "timezoneId": { "type": "string" },
+        "taxId": { "type": "string" },
+        "taxMode": { "type": "string" },
+        "ownerUid": { "type": "string" },
+        "members": { "type": "array", "items": { "type": "string" } },
+        "createdAt": { "type": "timestamp" }
+      },
+      "required": ["id", "displayName", "ownerUid", "currencyCode", "countryCode"]
+    },
+    "Branch": {
+      "collection": "branches",
+      "path": "organizations/{orgId}/branches/{branchId}",
+      "properties": {
+        "id": { "type": "string" },
+        "orgId": { "type": "string" },
+        "name": { "type": "string" },
+        "code": { "type": "string" },
+        "address": { "type": "string" },
+        "phone": { "type": "string" },
+        "createdAt": { "type": "timestamp" }
+      },
+      "required": ["id", "orgId", "name", "code"]
+    },
+    "Register": {
+      "collection": "registers",
+      "path": "organizations/{orgId}/registers/{registerId}",
+      "properties": {
+        "id": { "type": "string" },
+        "orgId": { "type": "string" },
+        "branchId": { "type": "string" },
+        "name": { "type": "string" },
+        "receiptPrefix": { "type": "string" },
+        "receiptHeader": { "type": "string" },
+        "receiptFooter": { "type": "string" },
+        "isActive": { "type": "boolean" },
+        "createdAt": { "type": "timestamp" }
+      },
+      "required": ["id", "orgId", "branchId", "name", "receiptPrefix"]
+    },
+    "Membership": {
+      "collection": "memberships",
+      "path": "organizations/{orgId}/memberships/{membershipId}",
+      "properties": {
+        "id": { "type": "string" },
+        "orgId": { "type": "string" },
+        "userUid": { "type": "string" },
+        "role": { "type": "string", "enum": ["OWNER", "ADMIN", "MANAGER", "STOREKEEPER", "CASHIER"] },
+        "branchId": { "type": "string" },
+        "status": { "type": "string", "enum": ["ACTIVE", "SUSPENDED", "REVOKED"] },
+        "pinHash": { "type": "string" },
+        "createdAt": { "type": "timestamp" }
+      },
+      "required": ["id", "orgId", "userUid", "role", "status"]
+    },
+    "Device": {
+      "collection": "devices",
+      "path": "organizations/{orgId}/devices/{deviceId}",
+      "properties": {
+        "id": { "type": "string" },
+        "orgId": { "type": "string" },
+        "deviceFingerprint": { "type": "string" },
+        "deviceName": { "type": "string" },
+        "registeredBy": { "type": "string" },
+        "status": { "type": "string", "enum": ["ACTIVE", "REVOKED"] },
+        "lastSeenAt": { "type": "timestamp" },
+        "createdAt": { "type": "timestamp" }
+      },
+      "required": ["id", "orgId", "deviceFingerprint", "status"]
+    },
+    "Invitation": {
+      "collection": "invitations",
+      "path": "organizations/{orgId}/invitations/{invitationId}",
+      "properties": {
+        "id": { "type": "string" },
+        "orgId": { "type": "string" },
+        "branchId": { "type": "string" },
+        "email": { "type": "string" },
+        "role": { "type": "string", "enum": ["ADMIN", "MANAGER", "STOREKEEPER", "CASHIER"] },
+        "code": { "type": "string" },
+        "status": { "type": "string", "enum": ["PENDING", "ACCEPTED", "EXPIRED", "REVOKED"] },
+        "expiresAt": { "type": "timestamp" },
+        "usedAt": { "type": "timestamp" },
+        "createdAt": { "type": "timestamp" }
+      },
+      "required": ["id", "orgId", "email", "role", "code", "status", "expiresAt"]
+    },
+    "Product": {
+      "collection": "products",
+      "path": "organizations/{orgId}/products/{productId}",
+      "properties": {
+        "id": { "type": "string" },
+        "orgId": { "type": "string" },
+        "name": { "type": "string" },
+        "sellingPrice": { "type": "number" }
+      },
+      "required": ["id", "orgId", "name"]
+    },
+    "Sale": {
+      "collection": "sales",
+      "path": "organizations/{orgId}/sales/{saleId}",
+      "properties": {
+        "id": { "type": "string" },
+        "orgId": { "type": "string" },
+        "invoiceNo": { "type": "string" },
+        "grandTotal": { "type": "number" },
+        "createdBy": { "type": "string" }
+      },
+      "required": ["id", "orgId", "invoiceNo"]
+    }
+  },
+  "screenList": [
+    {
+      "id": 1,
+      "name": "Welcome",
+      "route": "auth/welcome",
+      "description": "Entry screen offering Google Sign-In, Email Sign-In, and Invitation Code redemption with Terms/Privacy/Help links."
+    },
+    {
+      "id": 2,
+      "name": "Sign in (Google or email)",
+      "route": "auth/signin",
+      "description": "Credential Manager native Google account picker with nonce or email/password credential form."
+    },
+    {
+      "id": 3,
+      "name": "Confirm your details",
+      "route": "auth/confirm_details",
+      "description": "Pre-filled editable full name from Google, locked email, optional phone & avatar, and mandatory Terms & Privacy agreement checkbox."
+    },
+    {
+      "id": 4,
+      "name": "Create or join",
+      "route": "auth/create_or_join",
+      "description": "Forking screen asking 'What do you want to do?' with options: Create my business or Join an existing business via invitation code."
+    },
+    {
+      "id": 5,
+      "name": "Business details",
+      "route": "onboarding/business_details",
+      "description": "Business name, optional legal name, business type, country (default NP), currency (default NPR), timezone (default Asia/Kathmandu), tax ID."
+    },
+    {
+      "id": 6,
+      "name": "First branch and till",
+      "route": "onboarding/first_branch_and_till",
+      "description": "Branch name, address, till name, receipt header, and receipt footer."
+    },
+    {
+      "id": 7,
+      "name": "Review and create",
+      "route": "onboarding/review_and_create",
+      "description": "Final summary screen triggering atomic idempotent create_organization RPC."
+    },
+    {
+      "id": 8,
+      "name": "Set PIN and biometrics",
+      "route": "auth/set_pin",
+      "description": "Setup 4 to 6-digit staff PIN with biometrics option for quick till unlocking."
+    },
+    {
+      "id": 9,
+      "name": "Organization picker",
+      "route": "auth/organization_picker",
+      "description": "Allows returning users with multiple active memberships to select which organization to load."
+    },
+    {
+      "id": 10,
+      "name": "Invitation entry",
+      "route": "auth/invitation_entry",
+      "description": "Enter invitation code; validates email match, single-use validity, and assigns locked role and branch."
+    },
+    {
+      "id": 11,
+      "name": "Access removed or session expired",
+      "route": "auth/access_removed",
+      "description": "Displayed when membership is revoked, suspended, or device registration has been terminated by admin."
+    },
+    {
+      "id": 12,
+      "name": "Forgot password",
+      "route": "auth/forgot_password",
+      "description": "Password reset dispatch for email-based accounts."
+    }
+  ],
+  "securityGuards": {
+    "googleAuthRule": "Google sign-in only authenticates identity. Organization and register access requires active membership verification.",
+    "emailMatchingRule": "Staff invitations strictly require signed-in email to match invited email before redemption.",
+    "deviceRegistration": "New devices register on first successful sign-in; owners retain remote revocation authority.",
+    "lastOwnerProtection": "Sole active OWNER membership cannot be revoked, removed, or downgraded.",
+    "pinPolicy": {
+      "length": "4-6 digits",
+      "offlineValidityDays": 7,
+      "maxFailedAttempts": 5,
+      "lockoutDurationMinutes": 5
+    }
+  }
+}

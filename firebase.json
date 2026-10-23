@@ -1,0 +1,14 @@
+{
+  "firestore": {
+    "database": "default",
+    "rules": "firestore.rules"
+  },
+  "emulators": {
+    "firestore": {
+      "port": 8085
+    },
+    "auth": {
+      "port": 9099
+    }
+  }
+}
