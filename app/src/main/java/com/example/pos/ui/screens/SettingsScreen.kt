@@ -333,12 +333,12 @@ fun SettingsScreen(viewModel: PosViewModel) {
         OutlinedTextField(
             value = searchQuery,
             onValueChange = { searchQuery = it },
-            placeholder = { Text("Search settings, hardware, security...", color = Color(0xFF64748B), fontSize = 13.sp) },
+            placeholder = { Text(strings.searchSettingsPlaceholder, color = Color(0xFF64748B), fontSize = 13.sp) },
             leadingIcon = { Icon(Icons.Default.Search, contentDescription = null, tint = PosPrimary) },
             trailingIcon = {
                 if (searchQuery.isNotBlank()) {
                     IconButton(onClick = { searchQuery = "" }) {
-                        Text("Clear", fontSize = 11.sp, color = PosRose, fontWeight = FontWeight.Bold)
+                        Text(strings.clear, fontSize = 11.sp, color = PosRose, fontWeight = FontWeight.Bold)
                     }
                 }
             },
@@ -435,21 +435,21 @@ fun SettingsScreen(viewModel: PosViewModel) {
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         PosOutlineButton(
-                            text = "Change PIN",
+                            text = strings.changePin,
                             icon = Icons.Default.Lock,
                             onClick = { showChangePinDialog = true },
                             modifier = Modifier.weight(1f)
                         )
 
                         PosOutlineButton(
-                            text = "Switch Operator",
+                            text = strings.switchOperator,
                             icon = Icons.Default.People,
                             onClick = { showSwitchOperatorDialog = true },
                             modifier = Modifier.weight(1f)
                         )
 
                         PosGradientButton(
-                            text = "Lock Terminal",
+                            text = strings.lockRegister,
                             icon = Icons.Default.Lock,
                             gradient = PosButtonGradients.Dark,
                             onClick = { viewModel.authManager.lockRegister() },
@@ -549,13 +549,13 @@ fun SettingsScreen(viewModel: PosViewModel) {
                                 Spacer(modifier = Modifier.width(12.dp))
                                 Column {
                                     Text(
-                                        text = "English",
+                                        text = strings.english,
                                         style = MaterialTheme.typography.bodyLarge,
                                         fontWeight = FontWeight.Bold,
                                         color = if (isEnglish) PosPrimary else Slate900
                                     )
                                     Text(
-                                        text = "Use English across all screens, bills, and settings",
+                                        text = strings.switchLanguagePrompt,
                                         style = MaterialTheme.typography.bodySmall,
                                         color = Color(0xFF64748B)
                                     )
@@ -639,7 +639,7 @@ fun SettingsScreen(viewModel: PosViewModel) {
         // GROUP: BUSINESS & STORE PROFILE (Owner, Admin)
         // ==========================================
         if (isOwnerOrAdmin && matchesFilter("business store organization tax currency VAT address branch location")) {
-            SettingsGroupHeader(title = "Business Profile", icon = Icons.Default.Store)
+            SettingsGroupHeader(title = strings.storeCardTitle, icon = Icons.Default.Store)
 
             Card(
                 colors = CardDefaults.cardColors(containerColor = Color.White),
@@ -660,14 +660,14 @@ fun SettingsScreen(viewModel: PosViewModel) {
                                 color = Slate900
                             )
                             Text(
-                                text = "Tax ID / VAT: ${org?.taxId ?: "Not set"}",
+                                text = "${strings.taxId}: ${org?.taxId ?: strings.notSet}",
                                 style = MaterialTheme.typography.bodySmall,
                                 color = Color(0xFF475569)
                             )
                         }
 
                         PosOutlineButton(
-                            text = "Edit Store Info",
+                            text = strings.editStoreInfo,
                             icon = Icons.Default.Edit,
                             onClick = { showEditStoreDialog = true }
                         )
@@ -682,11 +682,11 @@ fun SettingsScreen(viewModel: PosViewModel) {
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Column {
-                            Text("Currency Symbol", style = MaterialTheme.typography.labelSmall, color = Color(0xFF64748B))
+                            Text(strings.currencySymbol, style = MaterialTheme.typography.labelSmall, color = Color(0xFF64748B))
                             Text(org?.currencySymbol ?: "Rs", style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold, color = Slate900)
                         }
                         Column {
-                            Text("Tax Calculation Mode", style = MaterialTheme.typography.labelSmall, color = Color(0xFF64748B))
+                            Text(strings.taxCalculationMode, style = MaterialTheme.typography.labelSmall, color = Color(0xFF64748B))
                             Text(org?.taxMode?.name ?: "EXCLUSIVE", style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold, color = PosPrimary)
                         }
                     }
@@ -804,7 +804,7 @@ fun SettingsScreen(viewModel: PosViewModel) {
         // GROUP: TEAM & STAFF (Owner, Admin)
         // ==========================================
         if (isOwnerOrAdmin && matchesFilter("team staff invite role permission pin cashier manager")) {
-            SettingsGroupHeader(title = "Team & Staff", icon = Icons.Default.People)
+            SettingsGroupHeader(title = strings.staffCardTitle, icon = Icons.Default.People)
 
             Card(
                 colors = CardDefaults.cardColors(containerColor = Color.White),
@@ -818,7 +818,7 @@ fun SettingsScreen(viewModel: PosViewModel) {
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = "Staff Members (${realUsers.size})",
+                            text = strings.staffMembersCount(realUsers.size),
                             style = MaterialTheme.typography.titleSmall,
                             fontWeight = FontWeight.Bold,
                             color = Slate900
@@ -884,7 +884,7 @@ fun SettingsScreen(viewModel: PosViewModel) {
         // GROUP: SALES & CHECKOUT SETUP (Owner, Admin, Manager)
         // ==========================================
         if (isManagerOrAbove && matchesFilter("sales checkout payment cash card qr credit discount receipt auto print")) {
-            SettingsGroupHeader(title = "Sales & Checkout Setup", icon = Icons.Default.Payments)
+            SettingsGroupHeader(title = strings.salesCardTitle, icon = Icons.Default.Payments)
 
             Card(
                 colors = CardDefaults.cardColors(containerColor = Color.White),
@@ -892,14 +892,14 @@ fun SettingsScreen(viewModel: PosViewModel) {
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Column(modifier = Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                    Text("Accepted Payment Methods", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, color = Slate900)
+                    Text(strings.acceptedPaymentMethods, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, color = Slate900)
 
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text("Cash Drawer & Change Calculator", style = MaterialTheme.typography.bodySmall, color = Color(0xFF1E293B))
+                        Text(strings.cashPaymentMethod, style = MaterialTheme.typography.bodySmall, color = Color(0xFF1E293B))
                         Switch(
                             checked = allowCash,
                             onCheckedChange = { allowCash = it },
@@ -912,7 +912,7 @@ fun SettingsScreen(viewModel: PosViewModel) {
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text("Card Terminal (Visa / Mastercard)", style = MaterialTheme.typography.bodySmall, color = Color(0xFF1E293B))
+                        Text(strings.cardPaymentMethod, style = MaterialTheme.typography.bodySmall, color = Color(0xFF1E293B))
                         Switch(
                             checked = allowCard,
                             onCheckedChange = { allowCard = it },
@@ -925,7 +925,7 @@ fun SettingsScreen(viewModel: PosViewModel) {
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text("Digital QR & Mobile Wallets", style = MaterialTheme.typography.bodySmall, color = Color(0xFF1E293B))
+                        Text(strings.qrPaymentMethod, style = MaterialTheme.typography.bodySmall, color = Color(0xFF1E293B))
                         Switch(
                             checked = allowQr,
                             onCheckedChange = { allowQr = it },
@@ -938,7 +938,7 @@ fun SettingsScreen(viewModel: PosViewModel) {
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text("Store Credit Ledger Account", style = MaterialTheme.typography.bodySmall, color = Color(0xFF1E293B))
+                        Text(strings.creditPaymentMethod, style = MaterialTheme.typography.bodySmall, color = Color(0xFF1E293B))
                         Switch(
                             checked = allowCredit,
                             onCheckedChange = { allowCredit = it },
@@ -948,12 +948,12 @@ fun SettingsScreen(viewModel: PosViewModel) {
 
                     HorizontalDivider(color = Color(0xFFE2E8F0))
 
-                    Text("Checkout Policies & Receipt Notes", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, color = Slate900)
+                    Text(strings.checkoutPolicies, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, color = Slate900)
 
                     OutlinedTextField(
                         value = maxDiscountPercent,
                         onValueChange = { maxDiscountPercent = it },
-                        label = { Text("Max Cashier Discount Limit (%)") },
+                        label = { Text(strings.maxDiscountLimit) },
                         singleLine = true,
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                         modifier = Modifier.fillMaxWidth()
@@ -962,7 +962,7 @@ fun SettingsScreen(viewModel: PosViewModel) {
                     OutlinedTextField(
                         value = receiptHeaderNote,
                         onValueChange = { receiptHeaderNote = it },
-                        label = { Text("Receipt Header Note") },
+                        label = { Text(strings.receiptHeader) },
                         singleLine = true,
                         modifier = Modifier.fillMaxWidth()
                     )
@@ -970,7 +970,7 @@ fun SettingsScreen(viewModel: PosViewModel) {
                     OutlinedTextField(
                         value = receiptFooterNote,
                         onValueChange = { receiptFooterNote = it },
-                        label = { Text("Receipt Footer Note") },
+                        label = { Text(strings.receiptFooter) },
                         singleLine = true,
                         modifier = Modifier.fillMaxWidth()
                     )
@@ -980,7 +980,7 @@ fun SettingsScreen(viewModel: PosViewModel) {
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text("Auto-Print Receipt after Checkout", style = MaterialTheme.typography.bodySmall, color = Color(0xFF1E293B))
+                        Text(strings.autoPrintReceiptSwitch, style = MaterialTheme.typography.bodySmall, color = Color(0xFF1E293B))
                         Switch(
                             checked = autoPrintReceipt,
                             onCheckedChange = { autoPrintReceipt = it },
@@ -989,7 +989,7 @@ fun SettingsScreen(viewModel: PosViewModel) {
                     }
 
                     PosGradientButton(
-                        text = "Save Checkout Setup",
+                        text = strings.saveCheckoutSetup,
                         icon = Icons.Default.Save,
                         gradient = PosButtonGradients.Primary,
                         onClick = {
@@ -1017,7 +1017,7 @@ fun SettingsScreen(viewModel: PosViewModel) {
         // GROUP: INVENTORY RULES (Owner, Admin, Storekeeper)
         // ==========================================
         if (isStorekeeperOrAbove && matchesFilter("inventory stock low threshold negative block warn allow")) {
-            SettingsGroupHeader(title = "Inventory Rules", icon = Icons.Default.Inventory)
+            SettingsGroupHeader(title = strings.inventoryCardTitle, icon = Icons.Default.Inventory)
 
             Card(
                 colors = CardDefaults.cardColors(containerColor = Color.White),
@@ -1028,19 +1028,23 @@ fun SettingsScreen(viewModel: PosViewModel) {
                     OutlinedTextField(
                         value = lowStockThreshold,
                         onValueChange = { lowStockThreshold = it },
-                        label = { Text("Low Stock Alert Threshold (Units)") },
+                        label = { Text(strings.lowStockThresholdLabel) },
                         singleLine = true,
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                         modifier = Modifier.fillMaxWidth()
                     )
 
-                    Text("Negative Stock Sale Policy", style = MaterialTheme.typography.bodySmall, fontWeight = FontWeight.Bold, color = Slate900)
+                    Text(strings.negativeStockPolicy, style = MaterialTheme.typography.bodySmall, fontWeight = FontWeight.Bold, color = Slate900)
 
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
-                        listOf("BLOCK", "WARN", "ALLOW").forEach { option ->
+                        listOf(
+                        "BLOCK" to strings.stockBlock,
+                        "WARN" to strings.stockWarn,
+                        "ALLOW" to strings.stockAllow
+                    ).forEach { (option, label) ->
                             Surface(
                                 modifier = Modifier
                                     .weight(1f)
@@ -1061,14 +1065,14 @@ fun SettingsScreen(viewModel: PosViewModel) {
                                         selected = negativeStockBehavior == option,
                                         onClick = { negativeStockBehavior = option }
                                     )
-                                    Text(option, style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold)
+                                    Text(label, style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold)
                                 }
                             }
                         }
                     }
 
                     PosGradientButton(
-                        text = "Save Inventory Rules",
+                        text = strings.saveInventoryRules,
                         icon = Icons.Default.Save,
                         gradient = PosButtonGradients.Amber,
                         onClick = {
@@ -1090,7 +1094,7 @@ fun SettingsScreen(viewModel: PosViewModel) {
         // GROUP: DEVICES & HARDWARE (Owner, Admin)
         // ==========================================
         if (isOwnerOrAdmin && matchesFilter("devices hardware printer thermal paper 58mm 80mm scanner cash drawer test")) {
-            SettingsGroupHeader(title = "Devices & Hardware Connection", icon = Icons.Default.Devices)
+            SettingsGroupHeader(title = strings.hardwareCardTitle, icon = Icons.Default.Devices)
 
             Card(
                 colors = CardDefaults.cardColors(containerColor = Color.White),
@@ -1104,8 +1108,8 @@ fun SettingsScreen(viewModel: PosViewModel) {
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Column(modifier = Modifier.weight(1f)) {
-                            Text("Thermal Receipt Printer", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, color = Slate900)
-                            Text("Bluetooth SPP & USB OTG Direct ESC/POS", style = MaterialTheme.typography.labelSmall, color = Color(0xFF64748B))
+                            Text(strings.thermalPrinterTitle, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, color = Slate900)
+                            Text(strings.printerSubtitle, style = MaterialTheme.typography.labelSmall, color = Color(0xFF64748B))
                         }
 
                         OutlinedButton(
@@ -1123,11 +1127,11 @@ fun SettingsScreen(viewModel: PosViewModel) {
                             if (isScanningPrinters) {
                                 CircularProgressIndicator(modifier = Modifier.size(12.dp), strokeWidth = 1.5.dp, color = PosPrimary)
                                 Spacer(modifier = Modifier.width(4.dp))
-                                Text("Scanning...", fontSize = 11.sp, fontWeight = FontWeight.Bold)
+                                Text(strings.scanningPrinters, fontSize = 11.sp, fontWeight = FontWeight.Bold)
                             } else {
                                 Icon(Icons.Default.Refresh, contentDescription = null, modifier = Modifier.size(14.dp))
                                 Spacer(modifier = Modifier.width(4.dp))
-                                Text("Scan Devices", fontSize = 11.sp, fontWeight = FontWeight.Bold)
+                                Text(strings.scanPrinters, fontSize = 11.sp, fontWeight = FontWeight.Bold)
                             }
                         }
                     }
@@ -1280,7 +1284,7 @@ fun SettingsScreen(viewModel: PosViewModel) {
                             contentPadding = PaddingValues(horizontal = 4.dp, vertical = 0.dp)
                         ) {
                             Text(
-                                text = if (showAllBluetoothDevices) "Show Printers Only" else "Show All Paired Devices",
+                                text = if (showAllBluetoothDevices) strings.showPrintersOnly else strings.showAllPairedDevices,
                                 fontSize = 11.sp,
                                 fontWeight = FontWeight.SemiBold,
                                 color = Color(0xFF64748B)
@@ -1433,7 +1437,7 @@ fun SettingsScreen(viewModel: PosViewModel) {
                         OutlinedTextField(
                             value = printerName,
                             onValueChange = { printerName = it },
-                            label = { Text("Active Printer Name / MAC Address") },
+                            label = { Text(strings.printerAddressLabel) },
                             placeholder = { Text("e.g. MPT-II, POS-58, 00:11:22:33:44:55") },
                             singleLine = true,
                             modifier = Modifier.weight(1f)
@@ -1441,7 +1445,7 @@ fun SettingsScreen(viewModel: PosViewModel) {
 
                         if (printerName.isNotBlank()) {
                             PosGradientButton(
-                                text = "Connect",
+                                text = strings.btnConnect,
                                 onClick = {
                                     viewModel.connectBluetoothPrinter(printerName)
                                 },
@@ -1458,7 +1462,7 @@ fun SettingsScreen(viewModel: PosViewModel) {
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text("Paper Roll Width", style = MaterialTheme.typography.bodySmall, color = Color(0xFF1E293B))
+                        Text(strings.paperWidth, style = MaterialTheme.typography.bodySmall, color = Color(0xFF1E293B))
                         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                             listOf("58", "80").forEach { width ->
                                 OutlinedButton(
@@ -1506,12 +1510,12 @@ fun SettingsScreen(viewModel: PosViewModel) {
 
                     HorizontalDivider(color = Color(0xFFE2E8F0))
 
-                    Text("Barcode Scanner Setup", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, color = Slate900)
+                    Text(strings.barcodeScannerSetup, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, color = Slate900)
 
                     OutlinedTextField(
                         value = scannerMode,
                         onValueChange = { scannerMode = it },
-                        label = { Text("Barcode Scanner Emulation Mode") },
+                        label = { Text(strings.barcodeScannerMode) },
                         singleLine = true,
                         modifier = Modifier.fillMaxWidth()
                     )
@@ -1521,7 +1525,7 @@ fun SettingsScreen(viewModel: PosViewModel) {
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         PosOutlineButton(
-                            text = "Test Print",
+                            text = strings.testPrint,
                             icon = Icons.Default.Print,
                             onClick = {
                                 viewModel.testPrinterHardware { msg ->
@@ -1532,7 +1536,7 @@ fun SettingsScreen(viewModel: PosViewModel) {
                         )
 
                         PosOutlineButton(
-                            text = "Kick Drawer",
+                            text = strings.kickDrawer,
                             icon = Icons.Default.Payments,
                             onClick = {
                                 viewModel.kickCashDrawer { msg ->
@@ -1543,7 +1547,7 @@ fun SettingsScreen(viewModel: PosViewModel) {
                         )
 
                         PosGradientButton(
-                            text = "Save",
+                            text = strings.save,
                             icon = Icons.Default.Save,
                             gradient = PosButtonGradients.Primary,
                             onClick = {
@@ -1569,7 +1573,7 @@ fun SettingsScreen(viewModel: PosViewModel) {
         // GROUP: SECURITY & TERMINAL LOCK
         // ==========================================
         if (matchesFilter("security pin biometrics lock timer strong pin timeout logout")) {
-            SettingsGroupHeader(title = "Security & Terminal Lock", icon = Icons.Default.Security)
+            SettingsGroupHeader(title = strings.securityCardTitle, icon = Icons.Default.Security)
 
             Card(
                 colors = CardDefaults.cardColors(containerColor = Color.White),
@@ -1587,9 +1591,9 @@ fun SettingsScreen(viewModel: PosViewModel) {
                             Column(modifier = Modifier.weight(1f)) {
                                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                                     Icon(Icons.Default.Timer, contentDescription = null, tint = PosPrimary, modifier = Modifier.size(16.dp))
-                                    Text("Terminal Auto-Lock Timer", style = MaterialTheme.typography.bodySmall, fontWeight = FontWeight.Bold, color = Slate900)
+                                    Text(strings.autoLockTimerTitle, style = MaterialTheme.typography.bodySmall, fontWeight = FontWeight.Bold, color = Slate900)
                                 }
-                                Text("Lock register into quick-PIN screen after inactivity", style = MaterialTheme.typography.labelSmall, color = Color(0xFF475569))
+                                Text(strings.autoLockTimerDesc, style = MaterialTheme.typography.labelSmall, color = Color(0xFF475569))
                             }
                             Surface(
                                 shape = RoundedCornerShape(8.dp),
@@ -1657,7 +1661,7 @@ fun SettingsScreen(viewModel: PosViewModel) {
                                         )
                                         Spacer(modifier = Modifier.width(4.dp))
                                         Text(
-                                            text = if (isCustom) "Custom ($autoLockInterval)" else "+ Custom Timer",
+                                            text = if (isCustom) strings.customTimerWithInterval(autoLockInterval) else strings.customTimer,
                                             style = MaterialTheme.typography.labelSmall,
                                             fontWeight = if (isCustom) FontWeight.Bold else FontWeight.Normal,
                                             color = if (isCustom) Color.White else Color(0xFF334155)
@@ -1687,8 +1691,8 @@ fun SettingsScreen(viewModel: PosViewModel) {
                                 Icon(Icons.Default.Fingerprint, contentDescription = null, tint = PosEmerald, modifier = Modifier.size(20.dp))
                             }
                             Column {
-                                Text("Biometric Terminal Unlock", style = MaterialTheme.typography.bodySmall, fontWeight = FontWeight.Bold, color = Slate900)
-                                Text("Unlock cashier register via device fingerprint sensor", style = MaterialTheme.typography.labelSmall, color = Color(0xFF475569))
+                                Text(strings.biometricUnlockTitle, style = MaterialTheme.typography.bodySmall, fontWeight = FontWeight.Bold, color = Slate900)
+                                Text(strings.biometricUnlockDesc, style = MaterialTheme.typography.labelSmall, color = Color(0xFF475569))
                             }
                         }
                         Switch(
@@ -1732,8 +1736,8 @@ fun SettingsScreen(viewModel: PosViewModel) {
                                 Icon(Icons.Default.Fingerprint, contentDescription = null, tint = PosPrimary, modifier = Modifier.size(20.dp))
                             }
                             Column {
-                                Text("Biometric Login Authentication", style = MaterialTheme.typography.bodySmall, fontWeight = FontWeight.Bold, color = Slate900)
-                                Text("Fast one-tap staff fingerprint sign-in on login screen", style = MaterialTheme.typography.labelSmall, color = Color(0xFF475569))
+                                Text(strings.biometricLoginTitle, style = MaterialTheme.typography.bodySmall, fontWeight = FontWeight.Bold, color = Slate900)
+                                Text(strings.biometricLoginDesc, style = MaterialTheme.typography.labelSmall, color = Color(0xFF475569))
                             }
                         }
                         Switch(
@@ -1770,9 +1774,9 @@ fun SettingsScreen(viewModel: PosViewModel) {
                             Column(modifier = Modifier.weight(1f)) {
                                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                                     Icon(Icons.Default.Lock, contentDescription = null, tint = Color(0xFF64748B), modifier = Modifier.size(16.dp))
-                                    Text("Login Session Timeout (Auto-Logout)", style = MaterialTheme.typography.bodySmall, fontWeight = FontWeight.Bold, color = Slate900)
+                                    Text(strings.autoLogoutTimerTitle, style = MaterialTheme.typography.bodySmall, fontWeight = FontWeight.Bold, color = Slate900)
                                 }
-                                Text("Automatically sign out to login screen after prolonged inactivity", style = MaterialTheme.typography.labelSmall, color = Color(0xFF475569))
+                                Text(strings.autoLogoutTimerDesc, style = MaterialTheme.typography.labelSmall, color = Color(0xFF475569))
                             }
                             Surface(
                                 shape = RoundedCornerShape(8.dp),
@@ -1840,7 +1844,7 @@ fun SettingsScreen(viewModel: PosViewModel) {
                                         )
                                         Spacer(modifier = Modifier.width(4.dp))
                                         Text(
-                                            text = if (isCustom) "Custom ($autoLogoutInterval)" else "+ Custom Timer",
+                                            text = if (isCustom) strings.customTimerWithInterval(autoLogoutInterval) else strings.customTimer,
                                             style = MaterialTheme.typography.labelSmall,
                                             fontWeight = if (isCustom) FontWeight.Bold else FontWeight.Normal,
                                             color = if (isCustom) Color.White else Color(0xFF334155)
@@ -1860,8 +1864,8 @@ fun SettingsScreen(viewModel: PosViewModel) {
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Column(modifier = Modifier.weight(1f)) {
-                            Text("Enforce Unique Strong PINs", style = MaterialTheme.typography.bodySmall, fontWeight = FontWeight.Bold, color = Slate900)
-                            Text("Prohibit weak default PINs (e.g. 1234, 0000)", style = MaterialTheme.typography.labelSmall, color = Color(0xFF475569))
+                            Text(strings.enforceStrongPinTitle, style = MaterialTheme.typography.bodySmall, fontWeight = FontWeight.Bold, color = Slate900)
+                            Text(strings.enforceStrongPinDesc, style = MaterialTheme.typography.labelSmall, color = Color(0xFF475569))
                         }
                         Switch(
                             checked = enforceStrongPin,
@@ -1873,7 +1877,7 @@ fun SettingsScreen(viewModel: PosViewModel) {
                     Spacer(modifier = Modifier.height(4.dp))
 
                     PosGradientButton(
-                        text = "Save Security Settings",
+                        text = strings.saveSecuritySettings,
                         icon = Icons.Default.Save,
                         gradient = PosButtonGradients.Dark,
                         onClick = {
@@ -2097,7 +2101,7 @@ fun SettingsScreen(viewModel: PosViewModel) {
         // GROUP: AUDIT TRAIL & SYSTEM LOGS
         // ==========================================
         if (isOwnerOrAdmin && matchesFilter("data audit trail activity log history security events")) {
-            SettingsGroupHeader(title = "System Audit & Logs", icon = Icons.Default.Storage)
+            SettingsGroupHeader(title = strings.auditLogsGroupTitle, icon = Icons.Default.Storage)
 
             Card(
                 colors = CardDefaults.cardColors(containerColor = Color.White),
@@ -2111,12 +2115,12 @@ fun SettingsScreen(viewModel: PosViewModel) {
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Column(modifier = Modifier.weight(1f)) {
-                            Text("Audit Trail & Activity Log (${auditLogs.size})", style = MaterialTheme.typography.bodySmall, fontWeight = FontWeight.Bold, color = Slate900)
-                            Text("Real Room DB security entries & configuration logs", style = MaterialTheme.typography.labelSmall, color = Color(0xFF475569))
+                            Text(strings.auditTrailTitle(auditLogs.size), style = MaterialTheme.typography.bodySmall, fontWeight = FontWeight.Bold, color = Slate900)
+                            Text(strings.auditTrailDesc, style = MaterialTheme.typography.labelSmall, color = Color(0xFF475569))
                         }
 
                         PosCompactPillButton(
-                            text = "View Audit Logs",
+                            text = strings.viewAuditLogs,
                             icon = Icons.Default.History,
                             gradient = PosButtonGradients.Primary,
                             onClick = { showAuditLogsDialog = true }
@@ -2132,7 +2136,7 @@ fun SettingsScreen(viewModel: PosViewModel) {
         // GROUP: DATA BACKUP & RESTORE (GMAIL)
         // ==========================================
         if (isOwnerOrAdmin && matchesFilter("data backup restore export gmail cloud sync google drive json")) {
-            SettingsGroupHeader(title = "Database Backup & Restore (Gmail)", icon = Icons.Default.CloudSync)
+            SettingsGroupHeader(title = strings.backupCardTitle, icon = Icons.Default.CloudSync)
 
             Card(
                 colors = CardDefaults.cardColors(containerColor = Color.White),
@@ -2145,13 +2149,13 @@ fun SettingsScreen(viewModel: PosViewModel) {
                 ) {
                     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                         Text(
-                            text = "Full Store Database Backup",
+                            text = strings.fullBackupTitle,
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
                             color = Slate900
                         )
                         Text(
-                            text = "Export a comprehensive snapshot of all products, barcodes, customers, credit ledgers, sales history, shifts, and store configurations to your linked Gmail account or restore anytime.",
+                            text = strings.fullBackupDesc,
                             style = MaterialTheme.typography.bodySmall,
                             color = Color(0xFF475569)
                         )
@@ -2197,7 +2201,7 @@ fun SettingsScreen(viewModel: PosViewModel) {
                                 Column {
                                     Row(verticalAlignment = Alignment.CenterVertically) {
                                         Text(
-                                            text = "Linked Backup Gmail",
+                                            text = strings.linkedBackupGmail,
                                             style = MaterialTheme.typography.labelMedium,
                                             fontWeight = FontWeight.Bold,
                                             color = Slate900
@@ -2208,7 +2212,7 @@ fun SettingsScreen(viewModel: PosViewModel) {
                                             color = if (linkedEmail.isNotBlank()) PosEmerald else PosAmber
                                         ) {
                                             Text(
-                                                text = if (linkedEmail.isNotBlank()) "Linked" else "Not Linked",
+                                                text = if (linkedEmail.isNotBlank()) strings.statusActive else strings.notConfigured,
                                                 style = MaterialTheme.typography.labelSmall,
                                                 color = Color.White,
                                                 fontSize = 9.sp,
@@ -2218,7 +2222,7 @@ fun SettingsScreen(viewModel: PosViewModel) {
                                         }
                                     }
                                     Text(
-                                        text = linkedEmail.ifBlank { "Link your Gmail account to send backup files directly." },
+                                        text = linkedEmail.ifBlank { strings.noBackupEmailLinked },
                                         style = MaterialTheme.typography.bodySmall,
                                         color = if (linkedEmail.isNotBlank()) Slate900 else Color(0xFF94A3B8)
                                     )
@@ -2226,7 +2230,7 @@ fun SettingsScreen(viewModel: PosViewModel) {
                             }
 
                             PosCompactPillButton(
-                                text = if (linkedEmail.isNotBlank()) "Change" else "Link Gmail",
+                                text = if (linkedEmail.isNotBlank()) strings.changeGmail else strings.linkGmail,
                                 icon = Icons.Default.Email,
                                 gradient = if (linkedEmail.isNotBlank()) PosButtonGradients.Dark else PosButtonGradients.Primary,
                                 onClick = { showLinkGmailDialog = true }
@@ -2244,10 +2248,10 @@ fun SettingsScreen(viewModel: PosViewModel) {
                             val lastBackup = storeSettings?.lastBackupAt
                             val lastBackupFormatted = if (lastBackup != null && lastBackup > 0L) {
                                 SimpleDateFormat("MMM dd, yyyy HH:mm", Locale.getDefault()).format(Date(lastBackup))
-                            } else "Never backed up"
+                            } else strings.notSet
 
                             Text(
-                                text = "Last Backup: $lastBackupFormatted",
+                                text = "${strings.lastBackupAt}: $lastBackupFormatted",
                                 style = MaterialTheme.typography.bodySmall,
                                 color = Color(0xFF64748B),
                                 fontWeight = FontWeight.Medium
@@ -2272,7 +2276,7 @@ fun SettingsScreen(viewModel: PosViewModel) {
                                 color = PosEmerald.copy(alpha = 0.08f)
                             ) {
                                 Text(
-                                    text = "${customers.size} Customers",
+                                    text = strings.staffMembersCount(customers.size),
                                     style = MaterialTheme.typography.labelSmall,
                                     color = PosEmerald,
                                     fontWeight = FontWeight.Bold,
@@ -2331,7 +2335,7 @@ fun SettingsScreen(viewModel: PosViewModel) {
                         horizontalArrangement = Arrangement.spacedBy(10.dp)
                     ) {
                         PosGradientButton(
-                            text = "Backup to Gmail",
+                            text = strings.sendBackupToGmail,
                             icon = Icons.Default.Email,
                             gradient = PosButtonGradients.Primary,
                             onClick = {
@@ -2344,7 +2348,7 @@ fun SettingsScreen(viewModel: PosViewModel) {
                         )
 
                         PosOutlineButton(
-                            text = "Restore from File",
+                            text = strings.restoreBackupJson,
                             icon = Icons.Default.Storage,
                             onClick = {
                                 filePickerLauncher.launch("application/json")
@@ -2362,7 +2366,7 @@ fun SettingsScreen(viewModel: PosViewModel) {
         // GROUP: CLOUD FIRESTORE DATABASE SYNCHRONIZATION
         // ==========================================
         if (isOwnerOrAdmin && matchesFilter("data cloud sync firestore database collections fields 19 schema table firebase")) {
-            SettingsGroupHeader(title = "Cloud Firestore Database Synchronization", icon = Icons.Default.CloudSync)
+            SettingsGroupHeader(title = strings.firestoreSyncGroupTitle, icon = Icons.Default.CloudSync)
 
             Card(
                 colors = CardDefaults.cardColors(containerColor = Color.White),
@@ -2380,7 +2384,7 @@ fun SettingsScreen(viewModel: PosViewModel) {
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Text(
-                                text = "Firebase Firestore Schema & Collections",
+                                text = strings.firestoreCollectionsTitle,
                                 style = MaterialTheme.typography.titleMedium,
                                 fontWeight = FontWeight.Bold,
                                 color = Slate900
@@ -2423,7 +2427,7 @@ fun SettingsScreen(viewModel: PosViewModel) {
                         }
 
                         Text(
-                            text = "Generate and synchronize all 19 collections (customers, products, sales, ledgers, shifts, stock movements, etc.) with complete field structures into Cloud Firestore.",
+                            text = strings.firestoreSyncDesc,
                             style = MaterialTheme.typography.bodySmall,
                             color = Color(0xFF475569)
                         )
@@ -2441,28 +2445,28 @@ fun SettingsScreen(viewModel: PosViewModel) {
                                 modifier = Modifier.fillMaxWidth(),
                                 horizontalArrangement = Arrangement.SpaceBetween
                             ) {
-                                Text("Active Store ID:", style = MaterialTheme.typography.labelSmall, color = Color(0xFF64748B))
+                                Text(strings.activeStoreIdLabel, style = MaterialTheme.typography.labelSmall, color = Color(0xFF64748B))
                                 Text(org?.id ?: "N/A", style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Bold, color = Slate900)
                             }
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
                                 horizontalArrangement = Arrangement.SpaceBetween
                             ) {
-                                Text("Sync Status Message:", style = MaterialTheme.typography.labelSmall, color = Color(0xFF64748B))
+                                Text(strings.syncStatusMessageLabel, style = MaterialTheme.typography.labelSmall, color = Color(0xFF64748B))
                                 Text(syncState.message, style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Medium, color = PosPrimary)
                             }
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
                                 horizontalArrangement = Arrangement.SpaceBetween
                             ) {
-                                Text("Pending Outbox Queue:", style = MaterialTheme.typography.labelSmall, color = Color(0xFF64748B))
-                                Text("${syncState.pendingCount} record(s)", style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Bold, color = if (syncState.pendingCount > 0) PosAmber else PosEmerald)
+                                Text(strings.pendingOutboxLabel, style = MaterialTheme.typography.labelSmall, color = Color(0xFF64748B))
+                                Text(strings.pendingRecordsCount(syncState.pendingCount), style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Bold, color = if (syncState.pendingCount > 0) PosAmber else PosEmerald)
                             }
                         }
                     }
 
                     // Collections summary tags
-                    Text("19 Collections Auto-Synced:", style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Bold, color = Slate900)
+                    Text(strings.collectionsAutoSynced, style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Bold, color = Slate900)
                     val collectionsList = listOf(
                         "customers (Khata & Due)" to PosEmerald,
                         "customer_ledger" to PosEmerald,
@@ -2529,7 +2533,7 @@ fun SettingsScreen(viewModel: PosViewModel) {
                         horizontalArrangement = Arrangement.spacedBy(10.dp)
                     ) {
                         PosGradientButton(
-                            text = "Sync All Collections to Firebase",
+                            text = strings.syncAllCollections,
                             icon = Icons.Default.CloudSync,
                             gradient = PosButtonGradients.Emerald,
                             onClick = {
@@ -2542,7 +2546,7 @@ fun SettingsScreen(viewModel: PosViewModel) {
                         )
 
                         PosOutlineButton(
-                            text = "Full Cloud Sync",
+                            text = strings.fullCloudSync,
                             icon = Icons.Default.Refresh,
                             onClick = {
                                 viewModel.triggerCloudSync { success, msg ->
