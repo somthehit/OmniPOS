@@ -948,7 +948,7 @@ object EnglishStrings : PosStrings {
     override val from = "From"
     override val to = "To"
 
-    override val settingsTitle = "सेटिङ्स र कन्फिगरेसन (Settings)"
+    override val settingsTitle = "Settings"
     override val settingsSubtitle = "पसल विवरण, भाषा, हार्डवेयर, सुरक्षा, र क्लाउड ब्याकअप व्यवस्थापन गर्नुहोस्"
     override val profileCardTitle = "हालको अपरेटर प्रोफाइल"
     override val storeCardTitle = "पसल र व्यवसाय विवरण"
@@ -1186,10 +1186,10 @@ object EnglishStrings : PosStrings {
     override val roleOwnerDesc = "Unrestricted ownership, banking, licenses & store deletion"
     override val saveStaffButton = "Add Staff Member"
     override val staffPersonalInfoSection = "1. Personal Information / व्यक्तिगत विवरण"
-    override val staffNamePlaceholder = "e.g. Ramesh Thapa"
+    override val staffNamePlaceholder = "e.g. Som Thehit"
     override val staffNameHelper = "Official name shown on customer receipts & audits"
     override val staffEmailHelper = "Used for till operator login & invitation matching"
-    override val staffPhoneHelper = { label: String -> "Mobile contact for SMS alerts & manager contact" }
+    override val staffPhoneHelper = { _: String -> "Mobile contact for SMS alerts & manager contact" }
     override val staffRolesAvailable = { count: Int -> "$count Roles Available" }
     override val staffPinLabel = "Numeric PIN (4 to 6 Digits) *"
     override val staffPinPlaceholder = "e.g. 1234 or 8921"
@@ -1932,8 +1932,8 @@ object NepaliStrings : PosStrings {
     override val staffNamePlaceholder = "जस्तै: रमेश थापा"
     override val staffNameHelper = "ग्राहक रसिद र अडिट रिपोर्टमा देखिने आधिकारिक नाम"
     override val staffEmailHelper = "काउन्टर लगइन र निमन्त्रणाको लागि प्रयोग गरिने"
-    override val staffPhoneHelper = { label: String -> "एसएमएस अलर्ट र प्रबन्धक सम्पर्कको लागि मोबाइल नम्बर" }
-    override val staffRolesAvailable = { count: Int -> "${count} पदहरू उपलब्ध" }
+    override val staffPhoneHelper = { _: String -> "एसएमएस अलर्ट र प्रबन्धक सम्पर्कको लागि मोबाइल नम्बर" }
+    override val staffRolesAvailable = { count: Int -> "$count पदहरू उपलब्ध" }
     override val staffPinLabel = "अङ्कीय पिन (४ देखि ६ अङ्क) *"
     override val staffPinPlaceholder = "जस्तै: १२३४ वा ८९२१"
     override val staffPinHideTip = "पिन लुकाउनुहोस्"
