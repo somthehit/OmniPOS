@@ -95,6 +95,7 @@ import com.example.ui.theme.PosPrimary
 import com.example.ui.theme.PosRose
 import java.util.Locale
 
+@OptIn(androidx.camera.core.ExperimentalGetImage::class)
 @Composable
 fun StockInFormDialog(
     products: List<ProductEntity>,
@@ -544,13 +545,6 @@ fun StockInFormDialog(
                                     }
                                 )
                             }
-                            Text(
-                                text = if (isNepali) "बारकोड स्क्यान ➔" else "Scan Barcode ➔",
-                                style = MaterialTheme.typography.labelSmall,
-                                color = PosEmerald,
-                                fontWeight = FontWeight.Bold,
-                                modifier = Modifier.clickable { showCameraScannerSheet = true }
-                            )
                         }
                     }
                     Spacer(modifier = Modifier.height(6.dp))
@@ -594,7 +588,7 @@ fun StockInFormDialog(
                         )
 
                         // Product Options Dropdown / List
-                        if (isSelectingProduct && filteredProducts.isNotEmpty()) {
+                        if (isSelectingProduct) {
                             Spacer(modifier = Modifier.height(6.dp))
                             Card(
                                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.45f)),
@@ -602,7 +596,7 @@ fun StockInFormDialog(
                                 border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)),
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .heightIn(max = 180.dp)
+                                    .heightIn(max = 200.dp)
                             ) {
                                 Column(
                                     modifier = Modifier
@@ -610,6 +604,40 @@ fun StockInFormDialog(
                                         .verticalScroll(rememberScrollState()),
                                     verticalArrangement = Arrangement.spacedBy(4.dp)
                                 ) {
+                                    // TOP ITEM: Option to create & register as new product
+                                    Surface(
+                                        shape = RoundedCornerShape(8.dp),
+                                        color = PosEmerald.copy(alpha = 0.12f),
+                                        border = androidx.compose.foundation.BorderStroke(1.dp, PosEmerald.copy(alpha = 0.35f)),
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .clickable {
+                                                notFoundBarcode = searchQuery.trim()
+                                                showQuickCreateDialog = true
+                                            }
+                                            .padding(horizontal = 10.dp, vertical = 8.dp)
+                                    ) {
+                                        Row(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            verticalAlignment = Alignment.CenterVertically,
+                                            horizontalArrangement = Arrangement.Center
+                                        ) {
+                                            Icon(Icons.Default.Add, contentDescription = null, tint = PosEmerald, modifier = Modifier.size(16.dp))
+                                            Spacer(modifier = Modifier.width(6.dp))
+                                            Text(
+                                                text = if (searchQuery.isNotBlank()) {
+                                                    if (isNepali) "'$searchQuery' नयाँ सामानको रूपमा दर्ता गर्नुहोस्" else "Register '$searchQuery' as New Product"
+                                                } else {
+                                                    if (isNepali) "+ नयाँ सामान दर्ता गर्नुहोस्" else "+ Create & Register New Product"
+                                                },
+                                                style = MaterialTheme.typography.labelMedium,
+                                                fontWeight = FontWeight.Bold,
+                                                color = PosEmerald
+                                            )
+                                        }
+                                    }
+
+                                    // Matching products list below
                                     filteredProducts.forEach { prod ->
                                         Surface(
                                             shape = RoundedCornerShape(8.dp),
@@ -650,35 +678,6 @@ fun StockInFormDialog(
                                                     Text("Sell: ${CartCalculator.formatMoney(prod.sellingPriceInCents, currencySymbol)}", style = MaterialTheme.typography.bodySmall)
                                                 }
                                             }
-                                        }
-                                    }
-
-                                    // Option to create as new product even if partial matches exist
-                                    Surface(
-                                        shape = RoundedCornerShape(8.dp),
-                                        color = PosEmerald.copy(alpha = 0.08f),
-                                        border = androidx.compose.foundation.BorderStroke(1.dp, PosEmerald.copy(alpha = 0.25f)),
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .clickable {
-                                                notFoundBarcode = searchQuery.trim()
-                                                showQuickCreateDialog = true
-                                            }
-                                            .padding(horizontal = 10.dp, vertical = 8.dp)
-                                    ) {
-                                        Row(
-                                            modifier = Modifier.fillMaxWidth(),
-                                            verticalAlignment = Alignment.CenterVertically,
-                                            horizontalArrangement = Arrangement.Center
-                                        ) {
-                                            Icon(Icons.Default.Add, contentDescription = null, tint = PosEmerald, modifier = Modifier.size(16.dp))
-                                            Spacer(modifier = Modifier.width(6.dp))
-                                            Text(
-                                                text = if (searchQuery.isNotBlank()) "Register '$searchQuery' as New Product" else "+ Create & Register New Product",
-                                                style = MaterialTheme.typography.labelMedium,
-                                                fontWeight = FontWeight.Bold,
-                                                color = PosEmerald
-                                            )
                                         }
                                     }
                                 }
