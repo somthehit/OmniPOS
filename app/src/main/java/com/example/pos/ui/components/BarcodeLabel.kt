@@ -181,6 +181,22 @@ object BarcodeRenderer {
     }
 }
 
+data class LabelSizePreset(
+    val name: String,
+    val widthMm: Float,
+    val heightMm: Float,
+    val widthPx: Int = (widthMm * 8f).toInt(),
+    val heightPx: Int = (heightMm * 8f).toInt()
+)
+
+val DEFAULT_LABEL_PRESETS = listOf(
+    LabelSizePreset("50×30 mm (Std)", 50f, 30f, 400, 240),
+    LabelSizePreset("50×25 mm (Compact)", 50f, 25f, 400, 200),
+    LabelSizePreset("40×30 mm (Square)", 40f, 30f, 320, 240),
+    LabelSizePreset("38×25 mm (Mini Tag)", 38f, 25f, 304, 200),
+    LabelSizePreset("58×40 mm (Large Shelf)", 58f, 40f, 464, 320)
+)
+
 /** Drop-in replacement for the fake bars in the "Internal Code128 label" dialog. */
 @Composable
 fun BarcodeLabelPreview(
@@ -189,10 +205,14 @@ fun BarcodeLabelPreview(
     code: String,
     priceText: String = "",
     currencySymbol: String = "Rs",
+    widthPx: Int = 400,
+    heightPx: Int = 240,
     modifier: Modifier = Modifier
 ) {
-    val bitmap by produceState<Bitmap?>(initialValue = null, name, sku, code, priceText, currencySymbol) {
-        value = withContext(Dispatchers.Default) { BarcodeRenderer.label(name, sku, code, priceText, currencySymbol) }
+    val bitmap by produceState<Bitmap?>(initialValue = null, name, sku, code, priceText, currencySymbol, widthPx, heightPx) {
+        value = withContext(Dispatchers.Default) {
+            BarcodeRenderer.label(name, sku, code, priceText, currencySymbol, widthPx = widthPx, heightPx = heightPx)
+        }
     }
     bitmap?.let {
         Image(

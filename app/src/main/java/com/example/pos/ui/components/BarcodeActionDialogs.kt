@@ -49,8 +49,13 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material.icons.filled.Remove
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -698,38 +703,164 @@ fun InternalBarcodeLabelDialog(
 ) {
     val strings = LocalPosStrings.current
     val isNepali = strings is NepaliStrings
+    val context = androidx.compose.ui.platform.LocalContext.current
+    val coroutineScope = androidx.compose.runtime.rememberCoroutineScope()
+
+    var printCopiesCount by remember { mutableIntStateOf(1) }
+    var selectedPresetIndex by remember { mutableIntStateOf(0) }
+    val selectedPreset = DEFAULT_LABEL_PRESETS[selectedPresetIndex]
+    var isPrinting by remember { mutableStateOf(false) }
+
     val barcodeValue = remember(product) {
         if (product.barcode.isNotBlank()) product.barcode else BarcodeUtils.generateInternalCode128(product.sku)
     }
 
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(Icons.Default.QrCode, contentDescription = null, tint = PosEmerald)
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(if (isNepali) "आन्तरिक Code128 लेबल" else "Internal Code128 Label", fontWeight = FontWeight.Bold)
-            }
-        },
-        text = {
+    Dialog(onDismissRequest = onDismiss) {
+        Surface(
+            shape = RoundedCornerShape(16.dp),
+            color = MaterialTheme.colorScheme.surface,
+            tonalElevation = 8.dp,
+            modifier = Modifier
+                .fillMaxWidth()
+                .widthIn(max = 520.dp)
+        ) {
             Column(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .verticalScroll(rememberScrollState())
+                    .padding(20.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                Text(
-                    text = if (isNepali) "उत्पादक बारकोड नभएका सामानमा यो मानकीकृत लेबल छाप्नुहोस् वा टाँस्नुहोस्:" else "Print or stick this standardized label on products without manufacturer barcodes:",
-                    style = MaterialTheme.typography.bodySmall
-                )
+                // Header
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(Icons.Default.QrCode, contentDescription = null, tint = PosEmerald)
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            text = if (isNepali) "आन्तरिक Code128 लेबल" else "Internal Code128 Label",
+                            fontWeight = FontWeight.Bold,
+                            style = MaterialTheme.typography.titleMedium,
+                            color = Slate900
+                        )
+                    }
+                    IconButton(onClick = onDismiss) {
+                        Icon(Icons.Default.Close, contentDescription = "Close", tint = Color(0xFF94A3B8))
+                    }
+                }
 
+                HorizontalDivider(color = Color(0xFFE2E8F0))
+
+                // Copies & Paper Size Controls
+                Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                    // Copies Stepper Row
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = if (isNepali) "प्रिन्ट प्रति संख्या (Copies):" else "Print Copies:",
+                            style = MaterialTheme.typography.bodySmall,
+                            fontWeight = FontWeight.Bold,
+                            color = Slate900
+                        )
+
+                        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                            Box(
+                                modifier = Modifier
+                                    .size(32.dp)
+                                    .clip(CircleShape)
+                                    .background(Color(0xFFF1F5F9))
+                                    .clickable { if (printCopiesCount > 1) printCopiesCount-- },
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Icon(Icons.Default.Remove, contentDescription = "Decrease", modifier = Modifier.size(16.dp), tint = Slate700)
+                            }
+
+                            OutlinedTextField(
+                                value = printCopiesCount.toString(),
+                                onValueChange = { input ->
+                                    val parsed = input.filter { it.isDigit() }.toIntOrNull() ?: 1
+                                    printCopiesCount = parsed.coerceIn(1, 500)
+                                },
+                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                                singleLine = true,
+                                modifier = Modifier.width(64.dp),
+                                textStyle = androidx.compose.ui.text.TextStyle(textAlign = androidx.compose.ui.text.style.TextAlign.Center, fontWeight = FontWeight.Bold)
+                            )
+
+                            Box(
+                                modifier = Modifier
+                                    .size(32.dp)
+                                    .clip(CircleShape)
+                                    .background(Color(0xFFF1F5F9))
+                                    .clickable { if (printCopiesCount < 500) printCopiesCount++ },
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Icon(Icons.Default.Add, contentDescription = "Increase", modifier = Modifier.size(16.dp), tint = Slate700)
+                            }
+                        }
+                    }
+
+                    // Quick Copies Preset Chips
+                    LazyRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                        items(listOf(1, 2, 5, 10, 20, 50, 100)) { qty ->
+                            val isSel = printCopiesCount == qty
+                            Surface(
+                                shape = RoundedCornerShape(6.dp),
+                                color = if (isSel) PosPrimary else Color(0xFFF1F5F9),
+                                modifier = Modifier.clickable { printCopiesCount = qty }
+                            ) {
+                                Text(
+                                    text = "$qty",
+                                    style = MaterialTheme.typography.labelSmall,
+                                    fontWeight = FontWeight.Bold,
+                                    color = if (isSel) Color.White else Slate700,
+                                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp)
+                                )
+                            }
+                        }
+                    }
+
+                    // Paper Size Preset Selector
+                    Text(
+                        text = if (isNepali) "कागजको साइज (Paper Size):" else "Paper Size:",
+                        style = MaterialTheme.typography.bodySmall,
+                        fontWeight = FontWeight.Bold,
+                        color = Slate900
+                    )
+                    LazyRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                        itemsIndexed(DEFAULT_LABEL_PRESETS) { idx, preset ->
+                            val isSel = selectedPresetIndex == idx
+                            Surface(
+                                shape = RoundedCornerShape(6.dp),
+                                color = if (isSel) PosEmerald else Color(0xFFF1F5F9),
+                                border = BorderStroke(1.dp, if (isSel) PosEmerald else Color(0xFFCBD5E1)),
+                                modifier = Modifier.clickable { selectedPresetIndex = idx }
+                            ) {
+                                Text(
+                                    text = preset.name,
+                                    style = MaterialTheme.typography.labelSmall,
+                                    fontWeight = FontWeight.Bold,
+                                    color = if (isSel) Color.White else Slate700,
+                                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 5.dp)
+                                )
+                            }
+                        }
+                    }
+                }
+
+                // Resizable Label Preview
                 Surface(
                     shape = RoundedCornerShape(12.dp),
                     color = Color.White,
-                    border = androidx.compose.foundation.BorderStroke(1.5.dp, Color.Black),
-                    shadowElevation = 4.dp,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 8.dp)
+                    border = BorderStroke(1.5.dp, Color.Black),
+                    shadowElevation = 3.dp,
+                    modifier = Modifier.fillMaxWidth()
                 ) {
                     val priceFormatted = CartCalculator.formatMoney(product.sellingPriceInCents, "Rs")
                     BarcodeLabelPreview(
@@ -738,91 +869,101 @@ fun InternalBarcodeLabelDialog(
                         code = barcodeValue,
                         priceText = priceFormatted,
                         currencySymbol = "Rs",
-                        modifier = Modifier.padding(16.dp)
+                        widthPx = selectedPreset.widthPx,
+                        heightPx = selectedPreset.heightPx,
+                        modifier = Modifier.padding(12.dp)
+                    )
+                }
+
+                // Action Row
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.End,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    PosOutlineButton(
+                        text = if (isNepali) "रद्द" else "Cancel",
+                        onClick = onDismiss
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    PosGradientButton(
+                        text = if (isNepali) "प्रिन्ट ($printCopiesCount थान)" else "Print ($printCopiesCount copies)",
+                        icon = Icons.Default.Print,
+                        gradient = PosButtonGradients.Emerald,
+                        height = 44.dp,
+                        onClick = {
+                            isPrinting = true
+                            coroutineScope.launch(kotlinx.coroutines.Dispatchers.IO) {
+                                try {
+                                    val priceFormatted = CartCalculator.formatMoney(product.sellingPriceInCents, "Rs")
+                                    val bmp = BarcodeRenderer.label(
+                                        name = product.name,
+                                        sku = product.sku,
+                                        code = barcodeValue,
+                                        priceText = priceFormatted,
+                                        currencySymbol = "Rs",
+                                        widthPx = selectedPreset.widthPx,
+                                        heightPx = selectedPreset.heightPx
+                                    )
+                                    val pdfFile = buildLabelPdf(
+                                        context = context,
+                                        label = bmp,
+                                        copies = printCopiesCount,
+                                        labelWidthMm = selectedPreset.widthMm,
+                                        labelHeightMm = selectedPreset.heightMm
+                                    )
+                                    kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.Main) {
+                                        val printManager = context.getSystemService(android.content.Context.PRINT_SERVICE) as android.print.PrintManager
+                                        val printAdapter = object : android.print.PrintDocumentAdapter() {
+                                            override fun onLayout(
+                                                oldAttributes: android.print.PrintAttributes?,
+                                                newAttributes: android.print.PrintAttributes,
+                                                cancellationSignal: android.os.CancellationSignal?,
+                                                callback: LayoutResultCallback,
+                                                extras: android.os.Bundle?
+                                            ) {
+                                                if (cancellationSignal?.isCanceled == true) {
+                                                    callback.onLayoutCancelled()
+                                                    return
+                                                }
+                                                val info = android.print.PrintDocumentInfo.Builder(pdfFile.name)
+                                                    .setContentType(android.print.PrintDocumentInfo.CONTENT_TYPE_DOCUMENT)
+                                                    .build()
+                                                callback.onLayoutFinished(info, true)
+                                            }
+
+                                            override fun onWrite(
+                                                pages: Array<out android.print.PageRange>,
+                                                destination: android.os.ParcelFileDescriptor,
+                                                cancellationSignal: android.os.CancellationSignal?,
+                                                callback: WriteResultCallback
+                                            ) {
+                                                try {
+                                                    java.io.FileInputStream(pdfFile).use { input ->
+                                                        java.io.FileOutputStream(destination.fileDescriptor).use { output ->
+                                                            input.copyTo(output)
+                                                        }
+                                                    }
+                                                    callback.onWriteFinished(arrayOf(android.print.PageRange.ALL_PAGES))
+                                                } catch (e: Exception) {
+                                                    callback.onWriteFailed(e.message)
+                                                }
+                                            }
+                                        }
+                                        printManager.print("Label_${product.sku}", printAdapter, android.print.PrintAttributes.Builder().build())
+                                    }
+                                } catch (e: Exception) {
+                                    e.printStackTrace()
+                                } finally {
+                                    isPrinting = false
+                                }
+                            }
+                        }
                     )
                 }
             }
-        },
-        confirmButton = {
-            val context = androidx.compose.ui.platform.LocalContext.current
-            var isPrinting by remember { mutableStateOf(false) }
-            val coroutineScope = androidx.compose.runtime.rememberCoroutineScope()
-
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                PosOutlineButton(
-                    text = if (isNepali) "प्रिन्ट (Print)" else "Print",
-                    icon = Icons.Default.Print,
-                    onClick = {
-                        isPrinting = true
-                        coroutineScope.launch(kotlinx.coroutines.Dispatchers.IO) {
-                            try {
-                                val priceFormatted = CartCalculator.formatMoney(product.sellingPriceInCents, "Rs")
-                                val bmp = BarcodeRenderer.label(
-                                    name = product.name,
-                                    sku = product.sku,
-                                    code = barcodeValue,
-                                    priceText = priceFormatted,
-                                    currencySymbol = "Rs"
-                                )
-                                val pdfFile = buildLabelPdf(context, bmp, 1)
-                                kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.Main) {
-                                    val printManager = context.getSystemService(android.content.Context.PRINT_SERVICE) as android.print.PrintManager
-                                    val printAdapter = object : android.print.PrintDocumentAdapter() {
-                                        override fun onLayout(
-                                            oldAttributes: android.print.PrintAttributes?,
-                                            newAttributes: android.print.PrintAttributes,
-                                            cancellationSignal: android.os.CancellationSignal?,
-                                            callback: LayoutResultCallback,
-                                            extras: android.os.Bundle?
-                                        ) {
-                                            if (cancellationSignal?.isCanceled == true) {
-                                                callback.onLayoutCancelled()
-                                                return
-                                            }
-                                            val info = android.print.PrintDocumentInfo.Builder(pdfFile.name)
-                                                .setContentType(android.print.PrintDocumentInfo.CONTENT_TYPE_DOCUMENT)
-                                                .build()
-                                            callback.onLayoutFinished(info, true)
-                                        }
-
-                                        override fun onWrite(
-                                            pages: Array<out android.print.PageRange>,
-                                            destination: android.os.ParcelFileDescriptor,
-                                            cancellationSignal: android.os.CancellationSignal?,
-                                            callback: WriteResultCallback
-                                        ) {
-                                            try {
-                                                java.io.FileInputStream(pdfFile).use { input ->
-                                                    java.io.FileOutputStream(destination.fileDescriptor).use { output ->
-                                                        input.copyTo(output)
-                                                    }
-                                                }
-                                                callback.onWriteFinished(arrayOf(android.print.PageRange.ALL_PAGES))
-                                            } catch (e: Exception) {
-                                                callback.onWriteFailed(e.message)
-                                            }
-                                        }
-                                    }
-                                    printManager.print("Label_${product.sku}", printAdapter, android.print.PrintAttributes.Builder().build())
-                                }
-                            } catch (e: Exception) {
-                                e.printStackTrace()
-                            } finally {
-                                isPrinting = false
-                            }
-                        }
-                    }
-                )
-                PosGradientButton(
-                    text = if (isNepali) "सकियो" else "Done",
-                    icon = Icons.Default.Check,
-                    iconBadge = false,
-                    height = 44.dp,
-                    onClick = onDismiss
-                )
-            }
         }
-    )
+    }
 }
 
 @Composable
@@ -836,6 +977,10 @@ fun ProductDetailDialog(
     val isNepali = strings is NepaliStrings
     val context = androidx.compose.ui.platform.LocalContext.current
     val coroutineScope = androidx.compose.runtime.rememberCoroutineScope()
+
+    var printCopiesCount by remember { mutableIntStateOf(1) }
+    var selectedPresetIndex by remember { mutableIntStateOf(0) }
+    val selectedPreset = DEFAULT_LABEL_PRESETS[selectedPresetIndex]
     var isPrinting by remember { mutableStateOf(false) }
 
     val barcodeValue = remember(product) {
@@ -931,7 +1076,7 @@ fun ProductDetailDialog(
                     }
                 }
 
-                // Barcode Preview Section
+                // Barcode Preview & Controls Section
                 Text(
                     text = if (isNepali) "स्क्यानयोग्य बारकोड लेबल (Printable Label)" else "Scannable Printable Barcode Label",
                     style = MaterialTheme.typography.titleSmall,
@@ -939,11 +1084,112 @@ fun ProductDetailDialog(
                     color = Slate900
                 )
 
+                // Copies & Paper Size Controls
+                Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                    // Copies Stepper Row
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = if (isNepali) "प्रिन्ट प्रति संख्या (Copies):" else "Print Copies:",
+                            style = MaterialTheme.typography.bodySmall,
+                            fontWeight = FontWeight.Bold,
+                            color = Slate900
+                        )
+
+                        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                            Box(
+                                modifier = Modifier
+                                    .size(32.dp)
+                                    .clip(CircleShape)
+                                    .background(Color(0xFFF1F5F9))
+                                    .clickable { if (printCopiesCount > 1) printCopiesCount-- },
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Icon(Icons.Default.Remove, contentDescription = "Decrease", modifier = Modifier.size(16.dp), tint = Slate700)
+                            }
+
+                            OutlinedTextField(
+                                value = printCopiesCount.toString(),
+                                onValueChange = { input ->
+                                    val parsed = input.filter { it.isDigit() }.toIntOrNull() ?: 1
+                                    printCopiesCount = parsed.coerceIn(1, 500)
+                                },
+                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                                singleLine = true,
+                                modifier = Modifier.width(64.dp),
+                                textStyle = androidx.compose.ui.text.TextStyle(textAlign = androidx.compose.ui.text.style.TextAlign.Center, fontWeight = FontWeight.Bold)
+                            )
+
+                            Box(
+                                modifier = Modifier
+                                    .size(32.dp)
+                                    .clip(CircleShape)
+                                    .background(Color(0xFFF1F5F9))
+                                    .clickable { if (printCopiesCount < 500) printCopiesCount++ },
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Icon(Icons.Default.Add, contentDescription = "Increase", modifier = Modifier.size(16.dp), tint = Slate700)
+                            }
+                        }
+                    }
+
+                    // Quick Copies Preset Chips
+                    LazyRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                        items(listOf(1, 2, 5, 10, 20, 50, 100)) { qty ->
+                            val isSel = printCopiesCount == qty
+                            Surface(
+                                shape = RoundedCornerShape(6.dp),
+                                color = if (isSel) PosPrimary else Color(0xFFF1F5F9),
+                                modifier = Modifier.clickable { printCopiesCount = qty }
+                            ) {
+                                Text(
+                                    text = "$qty",
+                                    style = MaterialTheme.typography.labelSmall,
+                                    fontWeight = FontWeight.Bold,
+                                    color = if (isSel) Color.White else Slate700,
+                                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp)
+                                )
+                            }
+                        }
+                    }
+
+                    // Paper Size Preset Selector
+                    Text(
+                        text = if (isNepali) "कागजको साइज (Paper Size):" else "Paper Size:",
+                        style = MaterialTheme.typography.bodySmall,
+                        fontWeight = FontWeight.Bold,
+                        color = Slate900
+                    )
+                    LazyRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                        itemsIndexed(DEFAULT_LABEL_PRESETS) { idx, preset ->
+                            val isSel = selectedPresetIndex == idx
+                            Surface(
+                                shape = RoundedCornerShape(6.dp),
+                                color = if (isSel) PosEmerald else Color(0xFFF1F5F9),
+                                border = BorderStroke(1.dp, if (isSel) PosEmerald else Color(0xFFCBD5E1)),
+                                modifier = Modifier.clickable { selectedPresetIndex = idx }
+                            ) {
+                                Text(
+                                    text = preset.name,
+                                    style = MaterialTheme.typography.labelSmall,
+                                    fontWeight = FontWeight.Bold,
+                                    color = if (isSel) Color.White else Slate700,
+                                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 5.dp)
+                                )
+                            }
+                        }
+                    }
+                }
+
+                // Resizable Label Preview
                 Surface(
                     shape = RoundedCornerShape(12.dp),
                     color = Color.White,
                     border = BorderStroke(1.5.dp, Color.Black),
-                    shadowElevation = 2.dp,
+                    shadowElevation = 3.dp,
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     val priceFormatted = CartCalculator.formatMoney(product.sellingPriceInCents, currencySymbol)
@@ -953,7 +1199,9 @@ fun ProductDetailDialog(
                         code = barcodeValue,
                         priceText = priceFormatted,
                         currencySymbol = currencySymbol,
-                        modifier = Modifier.padding(16.dp)
+                        widthPx = selectedPreset.widthPx,
+                        heightPx = selectedPreset.heightPx,
+                        modifier = Modifier.padding(12.dp)
                     )
                 }
 
@@ -969,7 +1217,7 @@ fun ProductDetailDialog(
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     PosGradientButton(
-                        text = if (isNepali) "प्रिन्ट लेबल (Print)" else "Print Barcode Label",
+                        text = if (isNepali) "प्रिन्ट ($printCopiesCount थान)" else "Print ($printCopiesCount copies)",
                         icon = Icons.Default.Print,
                         gradient = PosButtonGradients.Emerald,
                         height = 44.dp,
@@ -983,9 +1231,17 @@ fun ProductDetailDialog(
                                         sku = product.sku,
                                         code = barcodeValue,
                                         priceText = priceFormatted,
-                                        currencySymbol = currencySymbol
+                                        currencySymbol = currencySymbol,
+                                        widthPx = selectedPreset.widthPx,
+                                        heightPx = selectedPreset.heightPx
                                     )
-                                    val pdfFile = buildLabelPdf(context, bmp, 1)
+                                    val pdfFile = buildLabelPdf(
+                                        context = context,
+                                        label = bmp,
+                                        copies = printCopiesCount,
+                                        labelWidthMm = selectedPreset.widthMm,
+                                        labelHeightMm = selectedPreset.heightMm
+                                    )
                                     kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.Main) {
                                         val printManager = context.getSystemService(android.content.Context.PRINT_SERVICE) as android.print.PrintManager
                                         val printAdapter = object : android.print.PrintDocumentAdapter() {
