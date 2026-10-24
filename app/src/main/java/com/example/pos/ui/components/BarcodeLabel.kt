@@ -87,61 +87,112 @@ object BarcodeRenderer {
     }
 
     /**
-     * Full label: item name, SKU, barcode, human-readable number.
-     * 50x30 mm at 203 dpi is about 400x240 px. For PDF output render at 2x (800x480) for sharper edges.
+     * Full price barcode label layout (matches standard retail sticker layout):
+     * - Left side: Prominent boxed price display (PRICE / Rs, big price numbers)
+     * - Right side: Item Name & SKU header, scannable barcode graphics, and barcode number underneath.
      */
     fun label(
         name: String,
         sku: String,
         code: String,
+        priceText: String = "",
+        currencySymbol: String = "Rs",
         widthPx: Int = 400,
-        heightPx: Int = 240,
+        heightPx: Int = 200,
         format: BarcodeFormat = formatFor(code),
     ): Bitmap {
         val bmp = Bitmap.createBitmap(widthPx, heightPx, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bmp)
         canvas.drawColor(Color.WHITE)
 
-        val s = widthPx / 400f                         // scale text with label size
+        val s = widthPx / 400f
         val pad = 10f * s
-        val centerX = widthPx / 2f
 
-        val namePaint = TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
-            color = Color.BLACK; textSize = 26f * s; typeface = Typeface.DEFAULT_BOLD; textAlign = Paint.Align.CENTER
+        // 1. LEFT SIDE PRICE BOX (Prominent price badge like reference image)
+        val priceBoxWidth = 125f * s
+        val priceBoxRect = RectF(pad, pad, pad + priceBoxWidth, heightPx - pad)
+
+        val boxPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = Color.BLACK
+            style = Paint.Style.STROKE
+            strokeWidth = 2.5f * s
         }
-        val smallPaint = TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
-            color = Color.BLACK; textSize = 20f * s; textAlign = Paint.Align.CENTER
+        canvas.drawRect(priceBoxRect, boxPaint)
+
+        val priceBoxCenterX = priceBoxRect.centerX()
+
+        // Price Header "PRICE / Rs"
+        val priceHeaderPaint = TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = Color.BLACK
+            textSize = 15f * s
+            typeface = Typeface.DEFAULT_BOLD
+            textAlign = Paint.Align.CENTER
         }
+        val cleanCurrency = if (currencySymbol.isNotBlank()) currencySymbol.replace(".", "").trim() else "Rs"
+        canvas.drawText("PRICE / $cleanCurrency", priceBoxCenterX, priceBoxRect.top + 22f * s, priceHeaderPaint)
+
+        // Large Price Value "155.00" or "155"
+        val cleanPrice = if (priceText.isNotBlank()) priceText.replace(currencySymbol, "").trim() else "0.00"
+        val priceValuePaint = TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = Color.BLACK
+            textSize = if (cleanPrice.length > 6) 22f * s else 30f * s
+            typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
+            textAlign = Paint.Align.CENTER
+        }
+        canvas.drawText(cleanPrice, priceBoxCenterX, priceBoxRect.centerY() + 12f * s, priceValuePaint)
+
+        // 2. RIGHT SIDE DETAILS & BARCODE
+        val rightLeft = priceBoxRect.right + 12f * s
+        val rightWidth = widthPx - pad - rightLeft
+        val rightCenterX = rightLeft + rightWidth / 2f
+
+        // Top Header Text: ITEM NAME/SKU: Name / SKU
+        val headerPaint = TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = Color.BLACK
+            textSize = 13f * s
+            typeface = Typeface.DEFAULT_BOLD
+            textAlign = Paint.Align.LEFT
+        }
+        val rawHeader = "ITEM NAME/SKU: $name / $sku"
+        val shownHeader = TextUtils.ellipsize(rawHeader, headerPaint, rightWidth, TextUtils.TruncateAt.END).toString()
+        canvas.drawText(shownHeader, rightLeft, pad + 16f * s, headerPaint)
+
+        // Human-readable barcode number at bottom
         val numPaint = TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
-            color = Color.BLACK; textSize = 24f * s; typeface = Typeface.MONOSPACE; textAlign = Paint.Align.CENTER
+            color = Color.BLACK
+            textSize = 16f * s
+            typeface = Typeface.MONOSPACE
+            textAlign = Paint.Align.CENTER
         }
+        val numberBaselineY = heightPx - pad - 2f * s
+        canvas.drawText(code, rightCenterX, numberBaselineY, numPaint)
 
-        var y = pad + namePaint.textSize
-        val shownName = TextUtils.ellipsize(name, namePaint, widthPx - 2 * pad, TextUtils.TruncateAt.END).toString()
-        canvas.drawText(shownName, centerX, y, namePaint)
-
-        y += smallPaint.textSize + 4f * s
-        canvas.drawText("SKU: $sku", centerX, y, smallPaint)
-
-        val barTop = y + 8f * s
-        val numberBaseline = heightPx - pad
-        val barHeight = (numberBaseline - numPaint.textSize - 6f * s - barTop).toInt().coerceAtLeast(40)
+        // Barcode Graphic in center
+        val barTopY = pad + 24f * s
+        val barBottomY = numberBaselineY - numPaint.textSize - 2f * s
+        val barHeight = (barBottomY - barTopY).toInt().coerceAtLeast(30)
 
         val natural = naturalModules(code, format)
-        val modulePx = ((widthPx - 2 * pad).toInt() / natural).coerceAtLeast(1)
+        val modulePx = ((rightWidth).toInt() / natural).coerceAtLeast(1)
         val bars = barcode(code, format, modulePx, barHeight)
-        canvas.drawBitmap(bars, (widthPx - bars.width) / 2f, barTop, null)
+        canvas.drawBitmap(bars, (rightCenterX - bars.width / 2f).coerceAtLeast(rightLeft), barTopY, null)
 
-        canvas.drawText(code, centerX, numberBaseline, numPaint)
         return bmp
     }
 }
 
 /** Drop-in replacement for the fake bars in the "Internal Code128 label" dialog. */
 @Composable
-fun BarcodeLabelPreview(name: String, sku: String, code: String, modifier: Modifier = Modifier) {
-    val bitmap by produceState<Bitmap?>(initialValue = null, name, sku, code) {
-        value = withContext(Dispatchers.Default) { BarcodeRenderer.label(name, sku, code) }
+fun BarcodeLabelPreview(
+    name: String,
+    sku: String,
+    code: String,
+    priceText: String = "",
+    currencySymbol: String = "Rs",
+    modifier: Modifier = Modifier
+) {
+    val bitmap by produceState<Bitmap?>(initialValue = null, name, sku, code, priceText, currencySymbol) {
+        value = withContext(Dispatchers.Default) { BarcodeRenderer.label(name, sku, code, priceText, currencySymbol) }
     }
     bitmap?.let {
         Image(

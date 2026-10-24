@@ -731,10 +731,13 @@ fun InternalBarcodeLabelDialog(
                         .fillMaxWidth()
                         .padding(vertical = 8.dp)
                 ) {
+                    val priceFormatted = CartCalculator.formatMoney(product.sellingPriceInCents, "Rs")
                     BarcodeLabelPreview(
                         name = product.name,
                         sku = product.sku,
                         code = barcodeValue,
+                        priceText = priceFormatted,
+                        currencySymbol = "Rs",
                         modifier = Modifier.padding(16.dp)
                     )
                 }
@@ -753,7 +756,14 @@ fun InternalBarcodeLabelDialog(
                         isPrinting = true
                         coroutineScope.launch(kotlinx.coroutines.Dispatchers.IO) {
                             try {
-                                val bmp = BarcodeRenderer.label(product.name, product.sku, barcodeValue)
+                                val priceFormatted = CartCalculator.formatMoney(product.sellingPriceInCents, "Rs")
+                                val bmp = BarcodeRenderer.label(
+                                    name = product.name,
+                                    sku = product.sku,
+                                    code = barcodeValue,
+                                    priceText = priceFormatted,
+                                    currencySymbol = "Rs"
+                                )
                                 val pdfFile = buildLabelPdf(context, bmp, 1)
                                 kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.Main) {
                                     val printManager = context.getSystemService(android.content.Context.PRINT_SERVICE) as android.print.PrintManager
@@ -936,10 +946,13 @@ fun ProductDetailDialog(
                     shadowElevation = 2.dp,
                     modifier = Modifier.fillMaxWidth()
                 ) {
+                    val priceFormatted = CartCalculator.formatMoney(product.sellingPriceInCents, currencySymbol)
                     BarcodeLabelPreview(
                         name = product.name,
                         sku = product.sku,
                         code = barcodeValue,
+                        priceText = priceFormatted,
+                        currencySymbol = currencySymbol,
                         modifier = Modifier.padding(16.dp)
                     )
                 }
@@ -964,7 +977,14 @@ fun ProductDetailDialog(
                             isPrinting = true
                             coroutineScope.launch(kotlinx.coroutines.Dispatchers.IO) {
                                 try {
-                                    val bmp = BarcodeRenderer.label(product.name, product.sku, barcodeValue)
+                                    val priceFormatted = CartCalculator.formatMoney(product.sellingPriceInCents, currencySymbol)
+                                    val bmp = BarcodeRenderer.label(
+                                        name = product.name,
+                                        sku = product.sku,
+                                        code = barcodeValue,
+                                        priceText = priceFormatted,
+                                        currencySymbol = currencySymbol
+                                    )
                                     val pdfFile = buildLabelPdf(context, bmp, 1)
                                     kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.Main) {
                                         val printManager = context.getSystemService(android.content.Context.PRINT_SERVICE) as android.print.PrintManager
